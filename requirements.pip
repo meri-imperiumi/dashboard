@@ -1,0 +1,5 @@
+Pillow
+spidev
+RPi.GPIO
+websocket-client
+python-dateutil
