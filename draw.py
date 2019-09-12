@@ -5,13 +5,16 @@ import datetime
 import dateutil.parser
 import time
 import threading
+import math
 from config import dashboard
 
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
 display48 = ImageFont.truetype(os.path.join(fontdir, dashboard['assets']['display_font']), 48)
 display24 = ImageFont.truetype(os.path.join(fontdir, dashboard['assets']['display_font']), 24)
+display12 = ImageFont.truetype(os.path.join(fontdir, dashboard['assets']['display_font']), 12)
 font48 = ImageFont.truetype(os.path.join(fontdir, dashboard['assets']['body_font']), 48)
 font24 = ImageFont.truetype(os.path.join(fontdir, dashboard['assets']['body_font']), 24)
+font12 = ImageFont.truetype(os.path.join(fontdir, dashboard['assets']['body_font']), 12)
 
 class Draw:
     def __init__(self, target):
@@ -64,30 +67,55 @@ class Draw:
             return str(value)
         if conversion == 'K':
             return "{0:.1f}".format(value - 273.15)
+        if conversion == 'm':
+            return "{0:.1f}".format(value)
         if conversion == 'int':
             return str(int(value))
         if conversion == 'Pa':
             return str(int(value / 100))
+        if conversion == 'rad':
+            return str(int(math.degrees(value)))
+        if conversion == 'm/s':
+            return "{0:.1f}".format(value * 1.944)
 
     def draw_slot(self, path):
         self.prepare_slot_data(path)
         print(path)
         print(self.values[path])
         if self.values[path]['rendered'] == True:
-            print("Already rendered")
             # No need to re-render
             return
         slot = list(dashboard[self.display]).index(path)
         label = dashboard[self.display][path]['label']
         value = self.convert_value(self.values[path]['value'], dashboard[self.display][path]['conversion'])
 
-        image = Image.new('1', (int(self.target.width / 3), self.target.height - 60), 1)
+        if slot < 3:
+            height = int((self.target.height - 60) / 5 * 3)
+            width = int(self.target.width / 3)
+            meta_font = display24
+            value_font = font48
+            slot_pos = slot
+            top_margin = 10
+            left_margin = slot_pos * width
+            value_margin = 30
+            unit_margin = 85
+        else:
+            height = int((self.target.height - 60) / 5 * 2)
+            width = int(self.target.width / 4)
+            meta_font = display12
+            value_font = font24
+            slot_pos = slot - 3
+            top_margin = int((self.target.height - 60) / 5 * 3) + 10
+            left_margin = slot_pos * width
+            value_margin = 20
+            unit_margin = 65
+        image = Image.new('1', (width, height), 1)
         draw = ImageDraw.Draw(image)
-        draw.text((0, 0), label.upper(), font=display24)
-        draw.text((0, 30), value, font=font48)
+        draw.text((0, 0), label.upper(), font=meta_font)
+        draw.text((0, value_margin), value, font=value_font)
         if 'unit' in dashboard[self.display][path]:
-            draw.text((0, 85), dashboard[self.display][path]['unit'], font=display24)
-        self.target.draw(image, int(self.target.width / 3 * slot), 10)
+            draw.text((0, unit_margin), dashboard[self.display][path]['unit'], font=meta_font)
+        self.target.draw(image, int(width * slot_pos), top_margin) 
         self.values[path]['rendered'] = True
 
     def update_time(self):
@@ -125,4 +153,4 @@ class Draw:
 
     def loop(self):
         self.draw_frame()
-        timer = threading.Timer(20.0, self.loop).start()
+        timer = threading.Timer(2.0, self.loop).start()

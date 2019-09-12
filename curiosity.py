@@ -15,8 +15,6 @@ def on_message(ws, message):
     for update in msg["updates"]:
         for value in update["values"]:
             dashboard.update_value(value, update["timestamp"])
-    # Draw immediately
-    dashboard.draw_frame()
 
 def on_error(ws, error):
     print(error)
