@@ -14,7 +14,11 @@ def on_message(ws, message):
         return
     for update in msg["updates"]:
         for value in update["values"]:
-            dashboard.update_value(value, update["timestamp"])
+            if value["path"] == "navigation.state":
+                dashboard.set_display(value["value"])
+                signalk.subscribe(ws, dashboard.get_paths())
+            else:
+                dashboard.update_value(value, update["timestamp"])
 
 def on_error(ws, error):
     print(error)
@@ -27,7 +31,7 @@ def on_open(ws):
     else:
         dashboard.show_message('Connected to Signal K')
         dashboard.set_display('default')
-
+    signalk.subscribe(ws, dashboard.get_paths())
 dashboard.set_display('loading')
 dashboard.show_message('Connecting to Signal K...')
 dashboard.loop()

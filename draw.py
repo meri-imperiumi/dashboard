@@ -29,6 +29,11 @@ class Draw:
             self.display = display
             self.prepare_display()
 
+    def get_paths(self):
+        paths = list(dashboard[self.display])
+        paths.append('navigation.state')
+        return paths
+
     def show_message(self, msg):
         image = Image.new('1', (self.target.width, int(self.target.height / 2)), 1)
         draw = ImageDraw.Draw(image)
