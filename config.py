@@ -8,6 +8,30 @@ dashboard = {
     },
     'loading': {},
     'default': {
+        'navigation.speedOverGround': {
+            'label': 'SOG',
+            'unit': 'kn',
+            'conversion': 'm/s',
+            'max_age': 30
+        },
+        'navigation.courseOverGroundTrue': {
+            'label': 'COG',
+            'unit': '°',
+            'conversion': 'rad',
+            'max_age': 20
+        },
+        'environment.depth.belowTransducer': {
+            'label': 'Depth',
+            'unit': 'm',
+            'conversion': 'm',
+            'max_age': 20
+        },
+        'environment.wind.speedTrue': {
+            'label': 'Wind spd',
+            'unit': 'kn',
+            'conversion': 'm/s',
+            'max_age': 30
+        },
         'environment.inside.salon.temperature': {
             'label': 'Temp',
             'unit': '°C',
