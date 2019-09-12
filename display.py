@@ -2,6 +2,7 @@
 from lib.waveshare_epd import epd4in2
 import logging
 import time
+import atexit
 from PIL import Image
 
 epd = epd4in2.EPD()
@@ -107,3 +108,10 @@ def _set_lut_quick():
               0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
               0x00, 0x00, 0x00, 0x00, 0x00, 0x00]:
         epd.send_data(i)
+
+# Clear screen on exit
+def clear_screen():
+    image = Image.new("1", (epd.width, epd.height), 255)
+    epd.display_frame(epd.get_frame_buffer(image))
+
+atexit.register(clear_screen)
