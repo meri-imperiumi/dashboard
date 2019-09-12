@@ -19,6 +19,7 @@ class Draw:
         self.display = None
         self.expected_flush_time = 0
         self.values = {}
+        self.drawing = False
 
     def set_display(self, display):
         if self.display != display:
@@ -109,6 +110,9 @@ class Draw:
         self.draw_frame()
 
     def draw_frame(self):
+        if self.drawing == True:
+            return
+        self.drawing = True
         self.update_time()
         for path in dashboard[self.display]:
             self.draw_slot(path)
@@ -117,6 +121,7 @@ class Draw:
         flush_end = time.time()
         if flush_end > flush_start:
             self.expected_flush_time = self.expected_flush_time * 0.9 + (flush_end - flush_start) * 0.1
+        self.drawing = False
 
     def loop(self):
         self.draw_frame()
