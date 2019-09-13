@@ -22,14 +22,12 @@ class DrawTarget:
 
     def flush(self):
         frame_buffer = epd.get_frame_buffer(self.buffer)
-        t = int(time.time() / (30 * 60))
-        print(t)
+        t = int(time.time() / (20 * 60))
         if t > self._last_full_refresh:
             print("Drawing full frame")
             self._last_full_refresh = t
             epd.display_frame(frame_buffer)
         else:
-            print("Drawing partial frame")
             _display_frame_quick(frame_buffer)
 
 def _display_frame_quick(frame_buffer):

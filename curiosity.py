@@ -24,6 +24,7 @@ def on_error(ws, error):
     print(error)
 
 def on_open(ws):
+    print("Connected to Signal K")
     initial_state = signalk.get_state()
     if initial_state:
         dashboard.show_message(f"Connected to Signal K, state: {initial_state}")
@@ -32,6 +33,7 @@ def on_open(ws):
         dashboard.show_message('Connected to Signal K')
         dashboard.set_display('default')
     signalk.subscribe(ws, dashboard.get_paths())
+
 dashboard.set_display('loading')
 dashboard.show_message('Connecting to Signal K...')
 dashboard.loop()

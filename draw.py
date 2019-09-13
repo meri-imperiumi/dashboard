@@ -6,6 +6,7 @@ import dateutil.parser
 import time
 import math
 import timeinterval
+import random
 from config import dashboard
 
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
@@ -23,6 +24,9 @@ class Draw:
         self.expected_flush_time = 0
         self.values = {}
         self.drawing = False
+        self.last_time = self.get_time()
+        self.offset_x = 0
+        self.offset_y = 0
 
     def set_display(self, display):
         if self.display != display:
@@ -95,8 +99,8 @@ class Draw:
         value = self.convert_value(self.values[path]['value'], dashboard[self.display][path]['conversion'])
 
         if slot < 3:
-            height = int((self.target.height - 60) / 5 * 3)
-            width = int(self.target.width / 3)
+            height = int((self.target.height - 65) / 5 * 3)
+            width = int((self.target.width - 5) / 3)
             meta_font = display24
             value_font = font48
             slot_pos = slot
@@ -105,8 +109,8 @@ class Draw:
             value_margin = 30
             unit_margin = 85
         else:
-            height = int((self.target.height - 60) / 5 * 2)
-            width = int(self.target.width / 4)
+            height = int((self.target.height - 65) / 5 * 2)
+            width = int((self.target.width - 5) / 4)
             meta_font = display12
             value_font = font24
             slot_pos = slot - 3
@@ -120,17 +124,32 @@ class Draw:
         draw.text((0, value_margin), value, font=value_font)
         if 'unit' in dashboard[self.display][path]:
             draw.text((0, unit_margin), dashboard[self.display][path]['unit'], font=meta_font)
-        self.target.draw(image, int(width * slot_pos), top_margin) 
+        self.target.draw(image, int(width * slot_pos) + self.offset_x, top_margin + self.offset_y) 
         self.values[path]['rendered'] = True
+
+    def get_time(self):
+        now = datetime.datetime.now() + datetime.timedelta(seconds=self.expected_flush_time)
+        return now.strftime(dashboard['time_format'])
+
+    def update_offsets(self):
+        # Change display offsets slightly once per minute
+        # to prevent burn-in
+        now = self.get_time()
+        if self.last_time == now:
+            return
+        self.offset_x = random.randint(-5, 5)
+        self.offset_y = random.randint(-5, 5)
+        print(f"offsets updated to {self.offset_x} {self.offset_y}")
+        self.prepare_display()
+        self.last_time = now
 
     def update_time(self):
         time_width = 80
         time_height = 40
         image = Image.new('1', (time_width, time_height), 1)
         draw = ImageDraw.Draw(image)
-        now = datetime.datetime.now() + datetime.timedelta(seconds=self.expected_flush_time)
-        draw.text((0, 0), now.strftime(dashboard['time_format']), font=display24)
-        self.target.draw(image, self.target.width - time_width, self.target.height - time_height)
+        draw.text((0, 0), self.get_time(), font=display24)
+        self.target.draw(image, self.target.width - 5 - time_width + self.offset_x, self.target.height - 5 - time_height + self.offset_y)
 
     def prepare_display(self):
         for path in self.values:
@@ -138,7 +157,7 @@ class Draw:
 
         image = Image.new('1', (self.target.width, self.target.height), 1)
         draw = ImageDraw.Draw(image)
-        draw.text((10, self.target.height - 40), dashboard['name'].upper(), font = display24, fill = 0)
+        draw.text((10 + self.offset_x, self.target.height - 40 + self.offset_y), dashboard['name'].upper(), font = display24, fill = 0)
         self.target.draw(image, 0, 0)
         self.draw_frame()
 
@@ -146,6 +165,7 @@ class Draw:
         if self.drawing == True:
             return
         self.drawing = True
+        self.update_offsets()
         self.update_time()
         for path in dashboard[self.display]:
             self.draw_slot(path)
