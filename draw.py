@@ -4,8 +4,8 @@ import logging
 import datetime
 import dateutil.parser
 import time
-import threading
 import math
+import timeinterval
 from config import dashboard
 
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
@@ -158,4 +158,4 @@ class Draw:
 
     def loop(self):
         self.draw_frame()
-        timer = threading.Timer(2.0, self.loop).start()
+        timer = timeinterval.start(2.0, self.draw_frame)
