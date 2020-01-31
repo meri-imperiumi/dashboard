@@ -16,8 +16,8 @@ def on_message(ws, message):
         for value in update["values"]:
             if value["path"] == "navigation.state":
                 if dashboard.display != value["value"]:
+                    dashboard.set_display(value["value"])
                     signalk.subscribe(ws, dashboard.get_paths())
-                dashboard.set_display(value["value"])
             else:
                 dashboard.update_value(value, update["timestamp"])
 

@@ -151,9 +151,7 @@ class Draw:
         self.target.draw(image, self.target.width - 5 - time_width + self.offset_x, self.target.height - 5 - time_height + self.offset_y)
 
     def prepare_display(self):
-        for path in self.values:
-            self.values[path]['rendered'] = False
-
+        self.values = {}
         image = Image.new('1', (self.target.width, self.target.height), 1)
         draw = ImageDraw.Draw(image)
         draw.text((10 + self.offset_x, self.target.height - 40 + self.offset_y), dashboard['name'].upper(), font = display24, fill = 0)
