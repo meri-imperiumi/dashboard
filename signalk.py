@@ -38,7 +38,9 @@ def subscribe(ws, paths):
     for path in paths:
         subscribes.append({
             'path': path,
-            'period': 1000
+            'period': 3000,
+            'format': 'delta',
+            'policy': 'fixed'
         })
 
     ws.send(json.dumps({

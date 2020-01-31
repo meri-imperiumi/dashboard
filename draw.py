@@ -90,8 +90,6 @@ class Draw:
 
     def draw_slot(self, path):
         self.prepare_slot_data(path)
-        print(path)
-        #print(self.values[path])
         if self.values[path]['rendered'] == True:
             # No need to re-render
             return
@@ -179,4 +177,4 @@ class Draw:
 
     def loop(self):
         self.draw_frame()
-        timer = timeinterval.start(2.0, self.draw_frame)
+        timer = timeinterval.start(5000.0, self.draw_frame)
