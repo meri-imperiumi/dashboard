@@ -90,7 +90,7 @@ dashboard = {
             'label': 'Anchor Position',
             'unit': 'm',
             'conversion': 'm',
-            'max_age': '60'
+            'max_age': 60
         },
         'navigation.speedOverGround': {
             'label': 'SOG',
