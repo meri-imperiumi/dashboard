@@ -28,6 +28,6 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 ## TODO
 
 * Make reliable
-* Test with different navigation states and more data providers/conversions
+* Test with more data providers/conversions
 * Design casing for the display and Raspberry Pi
 * (maybe) test outdoor usage
