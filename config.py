@@ -29,7 +29,7 @@ dashboard = {
             'max_age': 20
         },
         'environment.wind.speedTrue': {
-            'label': 'Wind spd',
+            'label': 'Wind',
             'unit': 'kn',
             'conversion': 'm/s',
             'max_age': 30
@@ -71,37 +71,49 @@ dashboard = {
             'unit': '%',
             'conversion': 'int',
             'max_age': 60
+        },
+        'environment.wind.speedTrue': {
+            'label': 'Wind',
+            'unit': 'kn',
+            'conversion': 'm/s',
+            'max_age': 30
         }
    },
    'anchored': {
+        'navigation.anchor.currentRadius': {
+            'label': 'Anchor',
+            'unit': 'm',
+            'conversion': 'm',
+            'max_age': 10
+        },
         'environment.depth.belowTransducer': {
             'label': 'Depth',
             'unit': 'm',
             'conversion': 'm',
             'max_age': 20
         },
-        'navigation.anchor.currentRadius': {
-            'label': 'Current radius',
-            'unit': 'm',
-            'conversion': 'm',
-            'max_age': 10
-        },
-        'navigation.anchor.position': {
-            'label': 'Anchor Position',
-            'unit': 'm',
-            'conversion': 'm',
-            'max_age': 60
-        },
-        'navigation.speedOverGround': {
-            'label': 'SOG',
+        'environment.wind.speedTrue': {
+            'label': 'Wind',
             'unit': 'kn',
             'conversion': 'm/s',
             'max_age': 30
+        },
+        'environment.inside.salon.temperature': {
+            'label': 'Temp',
+            'unit': '°C',
+            'conversion': 'K',
+            'max_age': 60
         },
         'environment.inside.salon.pressure': {
             'label': 'Baro',
             'unit': 'hPa',
             'conversion': 'Pa',
+            'max_age': 60
+        },
+        'environment.inside.salon.humidity': {
+            'label': 'Humid',
+            'unit': '%',
+            'conversion': 'int',
             'max_age': 60
         }
    },
@@ -131,7 +143,7 @@ dashboard = {
             'max_age': 60
         },
         'environment.wind.speedTrue': {
-            'label': 'Wind spd',
+            'label': 'Wind',
             'unit': 'kn',
             'conversion': 'm/s',
             'max_age': 30
