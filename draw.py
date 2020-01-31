@@ -30,6 +30,7 @@ class Draw:
 
     def set_display(self, display):
         if self.display != display:
+            print("Switching to {} display mode".format(display))
             self.display = display
             self.prepare_display()
 
@@ -90,7 +91,7 @@ class Draw:
     def draw_slot(self, path):
         self.prepare_slot_data(path)
         print(path)
-        print(self.values[path])
+        #print(self.values[path])
         if self.values[path]['rendered'] == True:
             # No need to re-render
             return
