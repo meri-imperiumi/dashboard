@@ -112,17 +112,29 @@ dashboard = {
             'conversion': 'm/s',
             'max_age': 30
         },
-        'environment.wind.speedTrue': {
-            'label': 'Wind spd',
-            'unit': 'kn',
-            'conversion': 'm/s',
-            'max_age': 30
+        'navigation.courseOverGroundTrue': {
+            'label': 'COG',
+            'unit': '°',
+            'conversion': 'rad',
+            'max_age': 20
         },
         'environment.depth.belowTransducer': {
             'label': 'Depth',
             'unit': 'm',
             'conversion': 'm',
             'max_age': 20
+        },
+        'environment.inside.salon.pressure': {
+            'label': 'Baro',
+            'unit': 'hPa',
+            'conversion': 'Pa',
+            'max_age': 60
+        },
+        'environment.wind.speedTrue': {
+            'label': 'Wind spd',
+            'unit': 'kn',
+            'conversion': 'm/s',
+            'max_age': 30
         }
   }
 # 'under-engine';
