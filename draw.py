@@ -136,8 +136,8 @@ class Draw:
         now = self.get_time()
         if self.last_time == now:
             return
-        self.offset_x = random.randint(-5, 5)
-        self.offset_y = random.randint(-5, 5)
+        self.offset_x = random.randint(0, 5)
+        self.offset_y = random.randint(0, 5)
         print(f"offsets updated to {self.offset_x} {self.offset_y}")
         self.prepare_display()
         self.last_time = now
