@@ -16,6 +16,7 @@ display12 = ImageFont.truetype(os.path.join(fontdir, dashboard['assets']['displa
 font48 = ImageFont.truetype(os.path.join(fontdir, dashboard['assets']['body_font']), 48)
 font24 = ImageFont.truetype(os.path.join(fontdir, dashboard['assets']['body_font']), 24)
 font12 = ImageFont.truetype(os.path.join(fontdir, dashboard['assets']['body_font']), 12)
+splash = Image.open(os.path.join(fontdir, dashboard['assets']['splash']))
 
 class Draw:
     def __init__(self, target):
@@ -40,9 +41,9 @@ class Draw:
         return paths
 
     def show_message(self, msg):
-        image = Image.new('1', (self.target.width, int(self.target.height / 2)), 1)
+        image = Image.new('1', (int(self.target.width / 2), int(self.target.height / 2)), 1)
         draw = ImageDraw.Draw(image)
-        draw.text((20, 50), msg, font=font24)
+        draw.text((int(self.target.width / 2), int(self.target.height / 2)), msg, font=font24)
         self.target.draw(image)
         self.draw_frame()
 
@@ -155,10 +156,15 @@ class Draw:
             self.values[path]['rendered'] = False
         image = Image.new('1', (self.target.width, self.target.height), 1)
         draw = ImageDraw.Draw(image)
+
+        if self.display == 'loading':
+            image.paste(splash, (0, 0))
+
         label = dashboard['name']
         if self.display and self.display != 'default':
             label = self.display
         draw.text((10 + self.offset_x, self.target.height - 40 + self.offset_y), label.upper(), font = display24, fill = 0)
+
         self.target.draw(image, 0, 0)
         self.draw_frame()
 

@@ -6,7 +6,8 @@ dashboard = {
     'time_format': '%H:%M',
     'assets': {
         'display_font': 'nasalization-rg.ttf',
-        'body_font': 'Eurostile.ttf'
+        'body_font': 'Eurostile.ttf',
+        'splash': 'voronoi1-splash.bmp'
     },
     'loading': {},
     'default': {

@@ -40,12 +40,11 @@ def on_close():
 
 def on_open(ws):
     print("Connected to Signal K")
+    dashboard.show_message('Connected to Signal K')
     initial_state = signalk.get_state()
     if initial_state:
-        dashboard.show_message(f"Connected to Signal K, state: {initial_state}")
         dashboard.set_display(initial_state)
     else:
-        dashboard.show_message('Connected to Signal K')
         dashboard.set_display('default')
     signalk.subscribe(ws, dashboard.get_paths())
 
