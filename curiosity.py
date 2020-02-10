@@ -4,6 +4,7 @@ import display
 import draw
 import signalk
 import json
+import time
 
 target = display.DrawTarget()
 dashboard = draw.Draw(target)
@@ -23,6 +24,12 @@ def on_message(ws, message):
 
 def on_error(ws, error):
     print(error)
+    on_close()
+
+def on_close():
+    print("Trying to reconnect")
+    time.sleep(10)
+    signalk.connect(on_message, on_error, on_open, on_close)
 
 def on_open(ws):
     print("Connected to Signal K")
@@ -38,4 +45,4 @@ def on_open(ws):
 dashboard.set_display('loading')
 dashboard.show_message('Connecting to Signal K...')
 dashboard.loop()
-signalk.connect(on_message, on_error, on_open)
+signalk.connect(on_message, on_error, on_open, on_close)

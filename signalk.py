@@ -14,13 +14,14 @@ def get_state():
     except:
         return None
 
-def connect(on_message, on_error, on_open):
+def connect(on_message, on_error, on_open, on_close):
     url = 'ws://{}:{}/signalk/v1/stream?subscribe=none'.format(signalk_host, signalk_port)
     print(url)
     ws = websocket.WebSocketApp(url,
         on_message = on_message,
         on_error = on_error,
-        on_open = on_open)
+        on_open = on_open,
+        on_close = on_close)
     ws.run_forever()
 
 def subscribe(ws, paths):
