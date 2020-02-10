@@ -62,7 +62,7 @@ class Draw:
                 'rendered': False
             }
         since_update = (datetime.datetime.now(datetime.timezone.utc) - self.values[path]['time']).total_seconds()
-        if since_update > dashboard[self.display][path]['max_age']:
+        if dashboard[self.display][path] and since_update > dashboard[self.display][path]['max_age']:
             # Stale value, switch to n/a
             self.values[path] = {
                 'value': 'n/a',
@@ -151,10 +151,14 @@ class Draw:
         self.target.draw(image, self.target.width - 5 - time_width + self.offset_x, self.target.height - 5 - time_height + self.offset_y)
 
     def prepare_display(self):
-        self.values = {}
+        for path in self.values:
+            self.values[path]['rendered'] = False
         image = Image.new('1', (self.target.width, self.target.height), 1)
         draw = ImageDraw.Draw(image)
-        draw.text((10 + self.offset_x, self.target.height - 40 + self.offset_y), dashboard['name'].upper(), font = display24, fill = 0)
+        label = dashboard['name']
+        if self.display and self.display != 'default':
+            label = self.display
+        draw.text((10 + self.offset_x, self.target.height - 40 + self.offset_y), label.upper(), font = display24, fill = 0)
         self.target.draw(image, 0, 0)
         self.draw_frame()
 
