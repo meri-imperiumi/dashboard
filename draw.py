@@ -57,7 +57,7 @@ class Draw:
         if not path in self.values:
             # Haven't received data for this slot
             self.values[path] = {
-                'value': 'n/a',
+                'value': None,
                 'time': datetime.datetime.now(datetime.timezone.utc),
                 'rendered': False
             }
@@ -65,14 +65,14 @@ class Draw:
         if dashboard[self.display][path] and since_update > dashboard[self.display][path]['max_age']:
             # Stale value, switch to n/a
             self.values[path] = {
-                'value': 'n/a',
+                'value': None,
                 'time': datetime.datetime.now(datetime.timezone.utc),
                 'rendered': False
             }
 
     def convert_value(self, value, conversion = None):
-        if value == 'n/a':
-            return value.upper()
+        if value == None:
+            return 'N/A'
         if not conversion:
             return str(value)
         if conversion == 'K':
