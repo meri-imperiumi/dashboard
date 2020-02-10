@@ -1,5 +1,5 @@
 # From https://github.com/yawkat/inkstate
-from lib.waveshare_epd import epd4in2
+import epd4in2
 import logging
 import time
 import atexit
