@@ -109,7 +109,9 @@ def _set_lut_quick():
 
 # Clear screen on exit
 def clear_screen():
+    print("Clearing screen, please stand by...")
     image = Image.new("1", (epd.width, epd.height), 255)
     epd.display_frame(epd.get_frame_buffer(image))
+    print("Ready, safe to exit now")
 
 atexit.register(clear_screen)
