@@ -27,7 +27,6 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 
 ## TODO
 
-* Make reliable
 * Test with more data providers/conversions
 * Design casing for the display and Raspberry Pi
 * (maybe) test outdoor usage
