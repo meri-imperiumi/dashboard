@@ -5,6 +5,7 @@ import draw
 import signalk
 import json
 import time
+import atexit
 
 target = display.DrawTarget()
 dashboard = draw.Draw(target)
@@ -23,13 +24,19 @@ def on_message(ws, message):
                 dashboard.update_value(value, update["timestamp"])
 
 def on_error(ws, error):
-    print(error)
-    on_close()
+    message = str(error)
+    print(message)
+    if not message:
+        # This is from quitting software, so don't reconnect
+        return
+    print("Trying to reconnect")
+    dashboard.set_display('loading')
+    time.sleep(10)
+    dashboard.show_message('Trying to connect...')
+    signalk.connect(on_message, on_error, on_open, on_close)
 
 def on_close():
-    print("Trying to reconnect")
-    time.sleep(10)
-    signalk.connect(on_message, on_error, on_open, on_close)
+    print("Connection closed")
 
 def on_open(ws):
     print("Connected to Signal K")
@@ -41,6 +48,12 @@ def on_open(ws):
         dashboard.show_message('Connected to Signal K')
         dashboard.set_display('default')
     signalk.subscribe(ws, dashboard.get_paths())
+
+def clear_screen():
+    print("Clearing screen, please stand by...")
+    dashboard.clear_screen()
+    print("Ready, safe to exit now")
+atexit.register(clear_screen)
 
 dashboard.set_display('loading')
 dashboard.show_message('Connecting to Signal K...')

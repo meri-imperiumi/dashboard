@@ -2,7 +2,6 @@
 import epd4in2
 import logging
 import time
-import atexit
 from PIL import Image
 
 epd = epd4in2.EPD()
@@ -29,6 +28,11 @@ class DrawTarget:
             epd.display_frame(frame_buffer)
         else:
             _display_frame_quick(frame_buffer)
+
+    def clear_screen(self):
+        image = Image.new("1", (epd.width, epd.height), 255)
+        epd.display_frame(epd.get_frame_buffer(image))
+        epd.sleep()
 
 def _display_frame_quick(frame_buffer):
     epd.send_command(epd4in2.RESOLUTION_SETTING)
@@ -106,13 +110,3 @@ def _set_lut_quick():
               0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
               0x00, 0x00, 0x00, 0x00, 0x00, 0x00]:
         epd.send_data(i)
-
-# Clear screen on exit
-def clear_screen():
-    print("Clearing screen, please stand by...")
-    image = Image.new("1", (epd.width, epd.height), 255)
-    epd.display_frame(epd.get_frame_buffer(image))
-    epd.sleep()
-    print("Ready, safe to exit now")
-
-atexit.register(clear_screen)

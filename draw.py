@@ -180,3 +180,7 @@ class Draw:
     def loop(self):
         self.draw_frame()
         timer = timeinterval.start(5000.0, self.draw_frame)
+
+    def clear_screen(self):
+        self.drawing = True
+        self.target.clear_screen()
