@@ -5,7 +5,7 @@ Restart=always
 User=pi
 
 [Unit]
-After=network-online.target signalk-server.service
+After=network-online.target
 
 [Install]
 WantedBy=multi-user.target
