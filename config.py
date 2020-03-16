@@ -35,19 +35,19 @@ dashboard = {
             'conversion': 'm/s',
             'max_age': 30
         },
-        'environment.inside.salon.temperature': {
+        'environment.outside.temperature': {
             'label': 'Temp',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 60
         },
-        'environment.inside.salon.pressure': {
+        'environment.outside.pressure': {
             'label': 'Baro',
             'unit': 'hPa',
             'conversion': 'Pa',
             'max_age': 60
         },
-        'environment.inside.salon.humidity': {
+        'environment.outside.humidity': {
             'label': 'Humid',
             'unit': '%',
             'conversion': 'int',
@@ -55,29 +55,41 @@ dashboard = {
         }
     },
    'not-under-way': {
-        'environment.inside.salon.temperature': {
-            'label': 'Temp',
-            'unit': '°C',
-            'conversion': 'K',
-            'max_age': 60
-        },
-        'environment.inside.salon.pressure': {
-            'label': 'Baro',
-            'unit': 'hPa',
-            'conversion': 'Pa',
-            'max_age': 60
-        },
-        'environment.inside.salon.humidity': {
-            'label': 'Humid',
-            'unit': '%',
-            'conversion': 'int',
-            'max_age': 60
-        },
         'environment.wind.speedTrue': {
             'label': 'Wind',
             'unit': 'kn',
             'conversion': 'm/s',
             'max_age': 30
+        },
+        'environment.outside.temperature': {
+            'label': 'Temp',
+            'unit': '°C',
+            'conversion': 'K',
+            'max_age': 60
+        },
+        'environment.outside.pressure': {
+            'label': 'Baro',
+            'unit': 'hPa',
+            'conversion': 'Pa',
+            'max_age': 60
+        },
+        'environment.outside.humidity': {
+            'label': 'Humid',
+            'unit': '%',
+            'conversion': 'int',
+            'max_age': 60
+        },
+        'environment.inside.salon.temperature': {
+            'label': 'Inside',
+            'unit': '°C',
+            'conversion': 'K',
+            'max_age': 60
+        },
+        'environment.inside.refrigerator.temperature': {
+            'label': 'Fridge',
+            'unit': '°C',
+            'conversion': 'K',
+            'max_age': 60
         }
    },
    'anchored': {
@@ -99,24 +111,30 @@ dashboard = {
             'conversion': 'm/s',
             'max_age': 30
         },
-        'environment.inside.salon.temperature': {
+        'environment.outside.temperature': {
             'label': 'Temp',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 60
         },
-        'environment.inside.salon.pressure': {
+        'environment.outside.pressure': {
             'label': 'Baro',
             'unit': 'hPa',
             'conversion': 'Pa',
             'max_age': 60
         },
-        'environment.inside.salon.humidity': {
+        'environment.outside.humidity': {
             'label': 'Humid',
             'unit': '%',
             'conversion': 'int',
             'max_age': 60
-        }
+        },
+        'environment.inside.salon.temperature': {
+            'label': 'Inside',
+            'unit': '°C',
+            'conversion': 'K',
+            'max_age': 60
+        },
    },
   'sailing': {
         'navigation.speedOverGround': {
@@ -131,23 +149,35 @@ dashboard = {
             'conversion': 'rad',
             'max_age': 20
         },
+        'environment.wind.speedTrue': {
+            'label': 'Wind',
+            'unit': 'kn',
+            'conversion': 'm/s',
+            'max_age': 30
+        },
         'environment.depth.belowTransducer': {
             'label': 'Depth',
             'unit': 'm',
             'conversion': 'm',
             'max_age': 20
         },
-        'environment.inside.salon.pressure': {
+        'environment.outside.pressure': {
             'label': 'Baro',
             'unit': 'hPa',
             'conversion': 'Pa',
             'max_age': 60
         },
-        'environment.wind.speedTrue': {
-            'label': 'Wind',
-            'unit': 'kn',
-            'conversion': 'm/s',
-            'max_age': 30
+        'environment.outside.temperature': {
+            'label': 'Baro',
+            'unit': 'hPa',
+            'conversion': 'Pa',
+            'max_age': 60
+        },
+        'environment.outside.humidity': {
+            'label': 'Humid',
+            'unit': '%',
+            'conversion': 'int',
+            'max_age': 60
         }
   }
 # 'under-engine';
