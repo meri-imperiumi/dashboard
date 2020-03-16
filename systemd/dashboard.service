@@ -1,5 +1,5 @@
 [Service]
-WorkingDirectory=/home/pi/dashboard
+WorkingDirectory=/home/pi/eink-dashboard
 ExecStart=/usr/bin/python3 curiosity.py
 Restart=always
 User=pi
