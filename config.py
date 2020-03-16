@@ -50,7 +50,7 @@ dashboard = {
         'environment.outside.humidity': {
             'label': 'Humid',
             'unit': '%',
-            'conversion': 'int',
+            'conversion': '%',
             'max_age': 60
         }
     },
@@ -76,7 +76,7 @@ dashboard = {
         'environment.outside.humidity': {
             'label': 'Humid',
             'unit': '%',
-            'conversion': 'int',
+            'conversion': '%',
             'max_age': 60
         },
         'environment.inside.salon.temperature': {
@@ -126,7 +126,7 @@ dashboard = {
         'environment.outside.humidity': {
             'label': 'Humid',
             'unit': '%',
-            'conversion': 'int',
+            'conversion': '%',
             'max_age': 60
         },
         'environment.inside.salon.temperature': {
@@ -176,7 +176,7 @@ dashboard = {
         'environment.outside.humidity': {
             'label': 'Humid',
             'unit': '%',
-            'conversion': 'int',
+            'conversion': '%',
             'max_age': 60
         }
   }

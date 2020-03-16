@@ -82,6 +82,8 @@ class Draw:
             return "{0:.1f}".format(value)
         if conversion == 'int':
             return str(int(value))
+        if conversion == '%':
+            return str(int(value * 100))
         if conversion == 'Pa':
             return str(int(value / 100))
         if conversion == 'rad':
