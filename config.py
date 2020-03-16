@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 signalk_host = 'localhost'
-signalk_port = 3000
+signalk_port = 80
 dashboard = {
     'name': 'Curiosity',
     'time_format': '%H:%M',
