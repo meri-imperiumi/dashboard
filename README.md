@@ -13,7 +13,7 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 
 ## Requirements
 
-* Raspberry Pi (tested with 3B+)
+* Raspberry Pi (tested with 3B+ and Zero W)
 * Python 3
 * Working installation of Signal K
 * [WaveShare 4.2inch e-paper module](https://www.waveshare.com/wiki/4.2inch_e-Paper_Module)
