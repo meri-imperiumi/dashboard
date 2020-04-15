@@ -1,9 +1,11 @@
 e-ink dashboard for Signal K
 ============================
 
-Status: experimental
+Status: in testing
 
 This project provides a dashboard view to telemetry from [Signal K](http://signalk.org/) to be displayed on an e-ink screen connected to a Raspberry Pi. Different dashboards can be viewed based on ship's `navigation.state`.
+
+![e-ink dashboard with Signal K data](https://live.staticflickr.com/65535/48726248553_6de2d37127_c_d.jpg)
 
 Eventually this might replace more traditional marine display units on a Signal K enabled vessel.
 
