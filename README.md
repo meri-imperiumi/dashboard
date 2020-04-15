@@ -3,7 +3,7 @@ e-ink dashboard for Signal K
 
 Status: in testing
 
-This project provides a dashboard view to telemetry from [Signal K](http://signalk.org/) to be displayed on an e-ink screen connected to a Raspberry Pi. Different dashboards can be viewed based on ship's `navigation.state`.
+This project provides a dashboard view to telemetry from [Signal K](http://signalk.org/) to be displayed on an e-ink screen connected to a Raspberry Pi. Different dashboards can be viewed based on ship's `navigation.state`. The [signalk-autostate plugin](https://github.com/meri-imperiumi/signalk-autostate) can be used to automatically update `navigation.state` based on vessel telemetry.
 
 ![e-ink dashboard with Signal K data](https://live.staticflickr.com/65535/48726248553_6de2d37127_c_d.jpg)
 
