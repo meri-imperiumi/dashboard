@@ -54,7 +54,7 @@ dashboard = {
             'max_age': 60
         }
     },
-   'not-under-way': {
+   'moored': {
         'environment.wind.speedTrue': {
             'label': 'Wind',
             'unit': 'kn',
@@ -180,5 +180,5 @@ dashboard = {
             'max_age': 60
         }
   }
-# 'under-engine';
+# 'motoring';
 }
