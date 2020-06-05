@@ -168,9 +168,9 @@ dashboard = {
             'max_age': 60
         },
         'environment.outside.temperature': {
-            'label': 'Baro',
-            'unit': 'hPa',
-            'conversion': 'Pa',
+            'label': 'Temp',
+            'unit': '°C',
+            'conversion': 'K',
             'max_age': 60
         },
         'environment.outside.humidity': {
