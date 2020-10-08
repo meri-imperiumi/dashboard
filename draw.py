@@ -153,6 +153,7 @@ class Draw:
         self.target.draw(image, self.target.width - 5 - time_width + self.offset_x, self.target.height - 5 - time_height + self.offset_y)
 
     def prepare_display(self):
+        self.target.clear_screen()
         for path in self.values:
             self.values[path]['rendered'] = False
         image = Image.new('1', (self.target.width, self.target.height), 1)
