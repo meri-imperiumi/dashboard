@@ -2,6 +2,7 @@
 WorkingDirectory=/home/pi/eink-dashboard
 ExecStart=/usr/bin/python3 curiosity.py
 Restart=always
+RestartSec=30
 User=pi
 
 [Unit]
