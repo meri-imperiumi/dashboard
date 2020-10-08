@@ -36,15 +36,6 @@ class Draw:
         print("Switching to {} display mode".format(display))
         self.display = display
         self.prepare_display()
-        if (display == "sailing") or (display == "motoring"):
-            # We want to update speed and course frequently
-            self.loop(10000.0)
-        elif (display == "anchored"):
-            # Distance to anchor is also somewhat critical value
-            self.loop(20000.0)
-        else:
-            # If we're not moving it is fine to update less frequently
-            self.loop(60000.0)
 
     def get_paths(self):
         paths = list(dashboard[self.display])
@@ -75,6 +66,7 @@ class Draw:
             }
         since_update = (datetime.datetime.now(datetime.timezone.utc) - self.values[path]['time']).total_seconds()
         if dashboard[self.display][path] and since_update > dashboard[self.display][path]['max_age']:
+            print("Setting path {} as stale".format(path))
             # Stale value, switch to n/a
             self.values[path] = {
                 'value': None,
@@ -183,10 +175,23 @@ class Draw:
             self.expected_flush_time = self.expected_flush_time * 0.9 + (flush_end - flush_start) * 0.1
         self.drawing = False
 
+    def variable_loop(self):
+        if (self.display == "sailing") or (self.display == "motoring"):
+            # We want to update speed and course frequently
+            self.loop(10000.0)
+        elif (self.display == "anchored"):
+            # Distance to anchor is also somewhat critical value
+            self.loop(20000.0)
+        else:
+            # If we're not moving it is fine to update less frequently
+            self.loop(60000.0)
+
     def loop(self, refresh_rate):
         if self.timer:
+            print("Clearing previous timer")
             # Stop previous timer
             self.timer.stop()
+        print("Setting new refresh rate to {}".format(refresh_rate))
         self.timer = timeinterval.start(refresh_rate, self.draw_frame)
 
     def clear_screen(self):

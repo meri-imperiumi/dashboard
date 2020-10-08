@@ -20,6 +20,7 @@ def on_message(ws, message):
                 if dashboard.display != value["value"]:
                     dashboard.set_display(value["value"])
                     signalk.subscribe(ws, dashboard.get_paths())
+                    dashboard.variable_loop()
             else:
                 dashboard.update_value(value, update["timestamp"])
 
@@ -57,3 +58,4 @@ atexit.register(clear_screen)
 dashboard.set_display('loading')
 dashboard.show_message('Connecting to Signal K...')
 signalk.connect(on_message, on_error, on_open, on_close)
+dashboard.variable_loop()
