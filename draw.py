@@ -153,7 +153,6 @@ class Draw:
         self.target.draw(image, self.target.width - 5 - time_width + self.offset_x, self.target.height - 5 - time_height + self.offset_y)
 
     def prepare_display(self):
-        self.target.clear_screen()
         for path in self.values:
             self.values[path]['rendered'] = False
         image = Image.new('1', (self.target.width, self.target.height), 1)
@@ -168,9 +167,9 @@ class Draw:
         draw.text((10 + self.offset_x, self.target.height - 40 + self.offset_y), label.upper(), font = display24, fill = 0)
 
         self.target.draw(image, 0, 0)
-        self.draw_frame()
+        self.draw_frame(True)
 
-    def draw_frame(self):
+    def draw_frame(self, full = False):
         if self.drawing == True:
             return
         self.drawing = True
@@ -178,7 +177,7 @@ class Draw:
         for path in dashboard[self.display]:
             self.draw_slot(path)
         flush_start = time.time()
-        self.target.flush()
+        self.target.flush(full)
         flush_end = time.time()
         if flush_end > flush_start:
             self.expected_flush_time = self.expected_flush_time * 0.9 + (flush_end - flush_start) * 0.1

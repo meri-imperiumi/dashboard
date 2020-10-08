@@ -19,10 +19,10 @@ class DrawTarget:
         assert image.height + y <= 300
         self.buffer.paste(image, (x, y))
 
-    def flush(self):
+    def flush(self, full = False):
         frame_buffer = epd.get_frame_buffer(self.buffer)
-        t = int(time.time() / (20 * 60))
-        if t > self._last_full_refresh:
+        t = int(time.time() / (10 * 60))
+        if (full == True) or (t > self._last_full_refresh):
             print("Drawing full frame")
             self._last_full_refresh = t
             epd.display_frame(frame_buffer)
