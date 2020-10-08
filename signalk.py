@@ -24,7 +24,6 @@ def connect(on_message, on_error, on_open, on_close):
         on_open = on_open,
         on_close = on_close)
     wst = threading.Thread(target=ws.run_forever)
-    wst.daemon = True
     wst.start()
 
 def subscribe(ws, paths):
