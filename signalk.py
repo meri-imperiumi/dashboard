@@ -1,6 +1,7 @@
 import urllib.request
 import json
 import websocket
+import threading
 from config import signalk_host, signalk_port
 
 def get_state():
@@ -22,7 +23,9 @@ def connect(on_message, on_error, on_open, on_close):
         on_error = on_error,
         on_open = on_open,
         on_close = on_close)
-    ws.run_forever()
+    wst = threading.Thread(target=ws.run_forever)
+    wst.daemon = True
+    wst.start()
 
 def subscribe(ws, paths):
     # First unsubscribe from previous
