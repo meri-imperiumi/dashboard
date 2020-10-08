@@ -5,8 +5,8 @@ import datetime
 import dateutil.parser
 import time
 import math
-import timeinterval
 import random
+import threading
 from config import dashboard
 
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
@@ -29,6 +29,7 @@ class Draw:
         self.offset_x = 0
         self.offset_y = 0
         self.timer = None
+        self.refresh_rate = 60000.0
 
     def set_display(self, display):
         if self.display == display:
@@ -36,6 +37,7 @@ class Draw:
         print("Switching to {} display mode".format(display))
         self.display = display
         self.prepare_display()
+        self.set_refresh_rate()
 
     def get_paths(self):
         paths = list(dashboard[self.display])
@@ -174,25 +176,26 @@ class Draw:
         if flush_end > flush_start:
             self.expected_flush_time = self.expected_flush_time * 0.9 + (flush_end - flush_start) * 0.1
         self.drawing = False
+        self.loop()
 
-    def variable_loop(self):
+    def set_refresh_rate(self):
         if (self.display == "sailing") or (self.display == "motoring"):
             # We want to update speed and course frequently
-            self.loop(10000.0)
+            self.refresh_rate = 10000.0
         elif (self.display == "anchored"):
             # Distance to anchor is also somewhat critical value
-            self.loop(20000.0)
+            self.refresh_rate = 20000.0
         else:
             # If we're not moving it is fine to update less frequently
-            self.loop(60000.0)
+            self.refresh_rate = 60000.0
 
-    def loop(self, refresh_rate):
+    def loop(self):
         if self.timer:
             print("Clearing previous timer")
             # Stop previous timer
             self.timer.stop()
-        print("Setting new refresh rate to {}".format(refresh_rate))
-        self.timer = timeinterval.start(refresh_rate, self.draw_frame)
+        self.draw_frame()
+        self.timer = timeinterval.start(self.refresh_rate, self.loop)
 
     def clear_screen(self):
         self.drawing = True

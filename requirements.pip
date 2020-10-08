@@ -3,5 +3,4 @@ spidev
 RPi.GPIO
 websocket-client
 python-dateutil
-timeinterval
 epd-library
