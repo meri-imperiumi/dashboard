@@ -187,7 +187,6 @@ class Draw:
         if self.timer:
             # Stop previous timer
             self.timer.stop()
-        self.draw_frame()
         self.timer = timeinterval.start(refresh_rate, self.draw_frame)
 
     def clear_screen(self):
