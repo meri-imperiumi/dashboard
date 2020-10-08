@@ -28,12 +28,23 @@ class Draw:
         self.last_time = self.get_time()
         self.offset_x = 0
         self.offset_y = 0
+        self.timer = None
 
     def set_display(self, display):
-        if self.display != display:
-            print("Switching to {} display mode".format(display))
-            self.display = display
-            self.prepare_display()
+        if self.display == display:
+            return
+        print("Switching to {} display mode".format(display))
+        self.display = display
+        self.prepare_display()
+        if (display == "sailing") or (display == "motoring"):
+            # We want to update speed and course frequently
+            self.loop(10000.0)
+        elif (display == "anchored"):
+            # Distance to anchor is also somewhat critical value
+            self.loop(20000.0)
+        else:
+            # If we're not moving it is fine to update less frequently
+            self.loop(60000.0)
 
     def get_paths(self):
         paths = list(dashboard[self.display])
@@ -185,9 +196,12 @@ class Draw:
             self.expected_flush_time = self.expected_flush_time * 0.9 + (flush_end - flush_start) * 0.1
         self.drawing = False
 
-    def loop(self):
+    def loop(self, refresh_rate):
+        if self.timer:
+            # Stop previous timer
+            self.timer.stop()
         self.draw_frame()
-        timer = timeinterval.start(5000.0, self.draw_frame)
+        self.timer = timeinterval.start(refresh_rate, self.draw_frame)
 
     def clear_screen(self):
         self.drawing = True

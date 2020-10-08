@@ -56,5 +56,4 @@ atexit.register(clear_screen)
 
 dashboard.set_display('loading')
 dashboard.show_message('Connecting to Signal K...')
-dashboard.loop()
 signalk.connect(on_message, on_error, on_open, on_close)
