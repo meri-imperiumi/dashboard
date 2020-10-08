@@ -9,9 +9,10 @@ epd = epd4in2.EPD()
 class DrawTarget:
     def __init__(self):
         self.buffer = Image.new("1", (epd.width, epd.height), 1)
-        self._last_full_refresh = -1
         self.width = epd.width
         self.height = epd.height
+        self.partial_frames = 0
+        self.partial_frame_limit = 20
         epd.init()
 
     def draw(self, image: Image, x: int = 0, y: int = 0):
@@ -21,13 +22,13 @@ class DrawTarget:
 
     def flush(self, full = False):
         frame_buffer = epd.get_frame_buffer(self.buffer)
-        t = int(time.time() / (10 * 60))
-        if (full == True) or (t > self._last_full_refresh):
+        if (full == True) or (self.partial_frames >= self.partial_frame_limit):
             print("Drawing full frame")
-            self._last_full_refresh = t
             epd.display_frame(frame_buffer)
+            self.partial_frames = 0
         else:
             _display_frame_quick(frame_buffer)
+            self.partial_frames += 1
 
     def clear_screen(self):
         image = Image.new("1", (epd.width, epd.height), 255)
