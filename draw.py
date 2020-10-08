@@ -144,18 +144,6 @@ class Draw:
         now = datetime.datetime.now() + datetime.timedelta(seconds=self.expected_flush_time)
         return now.strftime(dashboard['time_format'])
 
-    def update_offsets(self):
-        # Change display offsets slightly once per minute
-        # to prevent burn-in
-        now = self.get_time()
-        if self.last_time == now:
-            return
-        self.offset_x = random.randint(0, 5)
-        self.offset_y = random.randint(0, 5)
-        print(f"offsets updated to {self.offset_x} {self.offset_y}")
-        self.prepare_display()
-        self.last_time = now
-
     def update_time(self):
         time_width = 80
         time_height = 40
@@ -185,7 +173,6 @@ class Draw:
         if self.drawing == True:
             return
         self.drawing = True
-        self.update_offsets()
         self.update_time()
         for path in dashboard[self.display]:
             self.draw_slot(path)
