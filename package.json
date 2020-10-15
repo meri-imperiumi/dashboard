@@ -1,0 +1,33 @@
+{
+  "name": "@meri-imperiumi/signalk-epd",
+  "version": "1.0.0",
+  "description": "e-Paper display dashboard for Signal K",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meri-imperiumi/dashboard.git"
+  },
+  "author": "Henri Bergius <henri.bergius@iki.fi>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/meri-imperiumi/dashboard/issues"
+  },
+  "homepage": "https://github.com/meri-imperiumi/dashboard#readme",
+  "dependencies": {
+    "debug": "^4.1.1",
+    "epd4in2": "^0.1.0",
+    "js-quantities": "^1.7.4"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1"
+  }
+}
