@@ -7,7 +7,14 @@ This project provides a dashboard view to telemetry from [Signal K](http://signa
 
 ![e-ink dashboard with Signal K data](https://live.staticflickr.com/65535/48726248553_6de2d37127_c_d.jpg)
 
-Eventually this might replace more traditional marine display units on a Signal K enabled vessel.
+
+This can be used as generic display to show any data from Signal K and is not resticted by limitations of traditional NMEA2000 displays of what PGNs they can show.
+Do note that e-ink displays takes several seconds to do a full refresh and is not suitable for data changing by the second like COG,SOG etc.
+Of cource, SignalK plugins that show averages (like SOG over several minutes) is doable. Data that is more static like tank status, weather, preassure, temperatures, battery SOC, voltage etc. are good candidates to show on this display.
+Certain e-ink screens can do partial refresh which might cope wita data that changes by the second. Partial refreash is not implemeted as of now.
+
+This serves as a good complement to more traditional marine display units on a Signal K enabled vessel as it can replace tank gauges, voltage/SOC displays.
+It can also show non NMEA data such as NAVTEX messages or weather forcasts not possible on traditional plotters/displays.
 
 The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) weather display.
 
@@ -15,19 +22,19 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 
 * Raspberry Pi (tested with 3B+,3B, 400 and Zero W)
 * Python 3
-* Working installation of Signal K
-* Waveshare e-ink dsiplay such as [WaveShare 4.2inch e-paper module](https://www.waveshare.com/wiki/4.2inch_e-Paper_Module)
+* Working installation of Signal K, including plugins providing data to be displayed in the display
+* Waveshare e-ink display such as [WaveShare 4.2inch e-paper module](https://www.waveshare.com/wiki/4.2inch_e-Paper_Module)
 
 ## Setup
 
 * Download the software/drivers from WaveShare by cloning (as they describe)
 * Connect the e-paper module to your Raspberry Pi and enable the SPI interface
-* Test the Python example for your display to ensure that it works
-	There might be an issue where the Python program runs but nothing is draw to the display. If so, try
-	Modify in epdconfig.py (in lib folder) to the following SPI_FRQ = 2000000 (this reduces the data rate over SPI)
-* Install the EPD library from the python directory	(/home/pi/e-Paper/RaspberryPi_JetsonNano/python)
-	sudo python3 setup.py build
-	sudo python3 setup.py install
+* Test the Python example provided by WaveShare for your display to ensure that it works with Python programs 
+	- There might be an issue where the Python program runs but nothing is draw to the display. If so, try
+	- Modify in epdconfig.py (in lib folder) to the following SPI_FRQ = 2000000 (this reduces the data rate over SPI)
+* Install the EPD library from the python directory for example (`/home/pi/e-Paper/RaspberryPi_JetsonNano/python`)
+	- sudo python3 setup.py build
+	- sudo python3 setup.py install
 * Clone this repository
 * Install the other dependencies from `requirements.pip`
 * Set up fonts and splash screen you want to use to the `assets` folder
@@ -37,5 +44,7 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 ## TODO
 
 * Test with more data providers/conversions
+* Implement partial redraw of the screen to cater for high frequency data
+* Ability to switch screen based on Bluetooth signal (or any other input like NMEA switch)
 * Design casing for the display and Raspberry Pi
 * (maybe) test outdoor usage
