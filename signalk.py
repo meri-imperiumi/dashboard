@@ -2,7 +2,10 @@ import urllib.request
 import json
 import websocket
 import threading
+import logging
 from config import signalk_host, signalk_port
+
+logger = logging.getLogger(__name__)
 
 def get_state():
     url = 'http://{}:{}/signalk/v1/api/vessels/self/navigation/state/value'.format(signalk_host, signalk_port)
@@ -10,14 +13,13 @@ def get_state():
     try:
         r = urllib.request.urlopen(req).read()
         cont = json.loads(r.decode('utf-8'))
-        print("Initial state {}".format(cont))
+        logger.debug("Initial state {}".format(cont))
         return cont
     except:
         return None
 
 def connect(on_message, on_error, on_open, on_close):
     url = 'ws://{}:{}/signalk/v1/stream?subscribe=none'.format(signalk_host, signalk_port)
-    print(url)
     ws = websocket.WebSocketApp(url,
         on_message = on_message,
         on_error = on_error,
@@ -26,7 +28,7 @@ def connect(on_message, on_error, on_open, on_close):
     wst = threading.Thread(target=ws.run_forever)
     wst.start()
 
-def subscribe(ws, paths):
+def subscribe(ws, pathlist):
     # First unsubscribe from previous
     ws.send(json.dumps({
         'context': '*',
@@ -36,11 +38,13 @@ def subscribe(ws, paths):
             }
         ]
     }))
+    logger.debug('Subscribe: To start subscribe')
     # Then subscribe to feed
     subscribes = []
-    for path in paths:
+    
+    for path in pathlist:
         subscribes.append({
-            'path': path,
+            'path': str(path),
             'period': 3000,
             'format': 'delta',
             'policy': 'fixed'

@@ -1,10 +1,13 @@
-# From https://github.com/yawkat/inkstate
-import epd4in2
+#from waveshare_epd import epd7in5_V2
+import epaperdummy
 import logging
-import time
 from PIL import Image
 
-epd = epd4in2.EPD()
+logger = logging.getLogger(__name__)
+
+#epd = epd4in2.EPD()
+#epd = epd7in5_V2.EPD()
+epd = epaperdummy.EPD()
 
 class DrawTarget:
     def __init__(self):
@@ -14,100 +17,29 @@ class DrawTarget:
         self.partial_frames = 0
         self.partial_frame_limit = 20
         epd.init()
+        epd.Clear()
 
     def draw(self, image: Image, x: int = 0, y: int = 0):
-        assert image.width + x <= 400
-        assert image.height + y <= 300
+        assert image.width + x <= epd.width
+        assert image.height + y <= epd.height
         self.buffer.paste(image, (x, y))
 
     def flush(self, full = False):
-        frame_buffer = epd.get_frame_buffer(self.buffer)
+#        frame_buffer = epd.get_frame_buffer(self.buffer)
+        frame_buffer = epd.getbuffer(self.buffer)
         if (full == True) or (self.partial_frames >= self.partial_frame_limit):
-            print("Drawing full frame")
-            epd.display_frame(frame_buffer)
+            logger.debug('Drawing full frame')
+            #epd.display(frame_buffer)
+# Debug , draw frame on screen
+            frame_buffer.show()
+# End debug
             self.partial_frames = 0
         else:
-            _display_frame_quick(frame_buffer)
+            #_display_frame_quick(frame_buffer)
             self.partial_frames += 1
-
-    def clear_screen(self):
-        image = Image.new("1", (epd.width, epd.height), 255)
-        epd.display_frame(epd.get_frame_buffer(image))
+        #Sleep after loading
         epd.sleep()
-
-def _display_frame_quick(frame_buffer):
-    epd.send_command(epd4in2.RESOLUTION_SETTING)
-    epd.send_data(epd.width >> 8)
-    epd.send_data(epd.width & 0xff)
-    epd.send_data(epd.height >> 8)
-    epd.send_data(epd.height & 0xff)
-
-    epd.send_command(epd4in2.VCM_DC_SETTING)
-    epd.send_data(0x12)
-
-    epd.send_command(epd4in2.VCOM_AND_DATA_INTERVAL_SETTING)
-    epd.send_command(0x97)  # VBDF 17|D7 VBDW 97  VBDB 57  VBDF F7  VBDW 77  VBDB 37  VBDR B7
-
-    if frame_buffer is not None:
-        epd.send_command(epd4in2.DATA_START_TRANSMISSION_2)
-        for i in range(0, epd.width * epd.height // 8):
-            epd.send_data(frame_buffer[i])
-        epd.delay_ms(2)
-
-    _set_lut_quick()
-    epd.send_command(epd4in2.DISPLAY_REFRESH)
-    epd.delay_ms(100)
-    epd.wait_until_idle()
-
-
-def _set_lut_quick():
-    epd.send_command(epd4in2.LUT_FOR_VCOM)
-    # lut_vcom0_quick
-    for i in [0x00, 0x0E, 0x00, 0x00, 0x00, 0x01,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]:
-        epd.send_data(i)
-    epd.send_command(epd4in2.LUT_WHITE_TO_WHITE)
-    # lut_ww_quick
-    for i in [0xA0, 0x0E, 0x00, 0x00, 0x00, 0x01,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00]:
-        epd.send_data(i)
-    epd.send_command(epd4in2.LUT_BLACK_TO_WHITE)
-    # lut_bw_quick
-    for i in [0xA0, 0x0E, 0x00, 0x00, 0x00, 0x01,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00]:
-        epd.send_data(i)
-    epd.send_command(epd4in2.LUT_WHITE_TO_BLACK)
-    # lut_wb_quick
-    for i in [0x50, 0x0E, 0x00, 0x00, 0x00, 0x01,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00]:
-        epd.send_data(i)
-    epd.send_command(epd4in2.LUT_BLACK_TO_BLACK)
-    # lut_bb_quick
-    for i in [0x50, 0x0E, 0x00, 0x00, 0x00, 0x01,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00]:
-        epd.send_data(i)
+            
+    def clear_screen(self):
+        epd.Clear()
+        epd.sleep()

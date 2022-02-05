@@ -6,6 +6,12 @@ import signalk
 import json
 import time
 import atexit
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.WARNING)
+
+logger = logging.getLogger(__name__)
 
 target = display.DrawTarget()
 dashboard = draw.Draw(target)
@@ -16,6 +22,8 @@ def on_message(ws, message):
         return
     for update in msg["updates"]:
         for value in update["values"]:
+            if str(value) == "{}":
+                break
             if value["path"] == "navigation.state":
                 if dashboard.display != value["value"]:
                     dashboard.set_display(value["value"])
@@ -26,21 +34,21 @@ def on_message(ws, message):
 
 def on_error(ws, error):
     message = str(error)
-    print(message)
+    logging.error('on_error: ' + message)
     if not message:
         # This is from quitting software, so don't reconnect
         return
-    print("Trying to reconnect")
+    logging.info("Trying to reconnect")
     dashboard.set_display('loading')
     time.sleep(10)
     dashboard.show_message('Trying to connect...')
     signalk.connect(on_message, on_error, on_open, on_close)
 
-def on_close():
-    print("Connection closed")
+def on_close(ws, close_status_code, close_msg):
+    logging.info("Connection closed. Close code:" + str(close_status_code) + " Close msg:" + str(close_msg))
 
 def on_open(ws):
-    print("Connected to Signal K")
+    logging.info("Connected to Signal K")
     dashboard.show_message('Connected to Signal K')
     initial_state = signalk.get_state()
     if initial_state:
@@ -50,9 +58,10 @@ def on_open(ws):
     signalk.subscribe(ws, dashboard.get_paths())
 
 def clear_screen():
-    print("Clearing screen, please stand by...")
+    logging.info("Clearing screen, please stand by...")
     dashboard.clear_screen()
-    print("Ready, safe to exit now")
+    logging.info("Ready, safe to exit now")
+
 atexit.register(clear_screen)
 
 dashboard.set_display('loading')
