@@ -6,7 +6,6 @@ import dateutil.parser
 import time
 import math
 import timeinterval
-#import random
 
 import config
 from config import dashboard
@@ -74,7 +73,7 @@ class Draw:
             image = Image.new('1', (endx-startx, time_height), 1)
             draw = ImageDraw.Draw(image)                     
             draw.text((0, 0), msg, font=font24)
-            self.target.draw(image,startx+50,self.target.height-time_height)
+            self.target.draw(image,startx+50,self.target.height-time_height-dashboard['layout']['space_edges'])
 
     def update_value(self, msg, timestamp):
         self.values[msg['path']] = {
@@ -204,16 +203,21 @@ class Draw:
         label = dashboard['name']
         if self.display and self.display != 'default':
             label = self.display
-        draw.text((dashboard['layout']['space_edges'] + self.offset_x, self.target.height - dashboard['layout']['time_height'] + self.offset_y), label.upper(), font = display24, fill = 0)
+        draw.text((dashboard['layout']['space_edges'] + self.offset_x, self.target.height - dashboard['layout']['time_height'] -dashboard['layout']['space_edges']+ self.offset_y), label.upper(), font = display24, fill = 0)
 
         self.target.draw(image, 0, 0)
         self.draw_frame(True)
 
+
     def draw_frame(self, full = False):
+
+# As as default, put the display to sleep according to WaveShare notes
+        sendtosleep=True
+        
         if self.drawing == True:
             return
-        logger.debug("Draw frame called at:"+str(datetime.datetime.now()))
-        logger.debug("State is:" + str(self.display))
+ #       logger.debug("Draw frame called at:"+str(datetime.datetime.now()))
+ #       logger.debug("State is:" + str(self.display))
         self.drawing = True
         self.update_time()
         for path in dashboard[self.display]:
@@ -226,8 +230,18 @@ class Draw:
         self.show_alertmessage('01234567890123456789012345678901234567')
 
         flush_start = time.time()
-        logger.debug('Before flush of display')
-        self.target.flush(full)
+#        logger.debug('Before flush of display')
+ 
+ # Do not put the display into sleep as we expect update soon       
+        if self.display == 'loading':
+            sendtosleep=False
+            
+        self.target.flush(full,sendtosleep)
+
+# Wait 10s so we show our cool slash screen and just not flicker..
+#        if self.display == 'loading':
+#           time.sleep(10)
+
         logger.debug('After display has been flushed')
         flush_end = time.time()
         if flush_end > flush_start:

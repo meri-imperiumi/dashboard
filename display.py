@@ -1,13 +1,14 @@
-#from waveshare_epd import epd7in5_V2
-import epaperdummy
+from waveshare_epd import epd7in5_V2
+#import epaperdummy
 import logging
 from PIL import Image
+import sys, traceback
 
 logger = logging.getLogger(__name__)
 
 #epd = epd4in2.EPD()
-#epd = epd7in5_V2.EPD()
-epd = epaperdummy.EPD()
+epd = epd7in5_V2.EPD()
+#epd = epaperdummy.EPD()
 
 class DrawTarget:
     def __init__(self):
@@ -17,6 +18,7 @@ class DrawTarget:
         self.partial_frames = 0
         self.partial_frame_limit = 20
         epd.init()
+        self.insleep = False
         epd.Clear()
 
     def draw(self, image: Image, x: int = 0, y: int = 0):
@@ -24,22 +26,33 @@ class DrawTarget:
         assert image.height + y <= epd.height
         self.buffer.paste(image, (x, y))
 
-    def flush(self, full = False):
-#        frame_buffer = epd.get_frame_buffer(self.buffer)
+    def flush(self, full = False, tosleep=True):
         frame_buffer = epd.getbuffer(self.buffer)
         if (full == True) or (self.partial_frames >= self.partial_frame_limit):
             logger.debug('Drawing full frame')
-            #epd.display(frame_buffer)
+            if self.insleep :
+                logger.debug('Wake up from sleep')
+                epd.init()
+                self.insleep = False
+            epd.display(frame_buffer)
 # Debug , draw frame on screen
-            frame_buffer.show()
+#            self.buffer.show()
 # End debug
             self.partial_frames = 0
         else:
             #_display_frame_quick(frame_buffer)
             self.partial_frames += 1
         #Sleep after loading
-        epd.sleep()
+
+#Send display to sleep during normal operation to prolong its life
+        if tosleep:
+            epd.sleep()
+            self.insleep = True 
             
     def clear_screen(self):
+        if self.insleep :
+            logger.debug('Wake up from sleep')
+            epd.init()
+            self.insleep = False
         epd.Clear()
         epd.sleep()

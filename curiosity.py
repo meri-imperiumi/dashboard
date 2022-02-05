@@ -7,6 +7,7 @@ import json
 import time
 import atexit
 import logging
+import sys, traceback
 
 logging.basicConfig(level=logging.DEBUG)
 #logging.basicConfig(level=logging.WARNING)
@@ -34,6 +35,7 @@ def on_message(ws, message):
 
 def on_error(ws, error):
     message = str(error)
+    traceback.print_exc(file=sys.stdout)
     logging.error('on_error: ' + message)
     if not message:
         # This is from quitting software, so don't reconnect

@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
-signalk_host = 'localhost'
-#signalk_host = 'hal.local'
+#signalk_host = 'localhost'
+signalk_host = 'raspberrypi400.local'
 signalk_port = 3000
 
 #Set to False for screen not having partial update, True for screens that has that
@@ -13,9 +13,10 @@ partial_update = False
 #
 # Refreshtime for a display is quite long (seconds) for a full refresh, do not make this to short
 # if the screen is not using partial refresh.
-loop_time_moving=10000
-loop_time_anchor=20000
-loop_time_moored=60000
+# As per WaveShare notes, refresh time should not be quicker than 180s
+loop_time_moving=20000
+loop_time_anchor=300000
+loop_time_moored=600000
 
 # Global settings for all screens (moored, sailing etc)
 #
