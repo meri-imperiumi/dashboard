@@ -31,7 +31,7 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 * Connect the e-paper module to your Raspberry Pi and enable the SPI interface
 * Test the Python example provided by WaveShare for your display to ensure that it works with Python programs 
 	- There might be an issue where the Python program runs but nothing is draw to the display. If so, try
-	- Modify in epdconfig.py (in lib folder) to the following SPI_FRQ = 2000000 (this reduces the data rate over SPI)
+	Modify in epdconfig.py (in lib folder) to the following SPI_FRQ = 2000000 (this reduces the data rate over SPI)
 * Install the EPD library from the python directory for example (`/home/pi/e-Paper/RaspberryPi_JetsonNano/python`)
 	- sudo python3 setup.py build
 	- sudo python3 setup.py install
