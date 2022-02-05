@@ -4,3 +4,4 @@ RPi.GPIO
 websocket-client
 python-dateutil
 timeinterval
+logging

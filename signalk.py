@@ -38,10 +38,10 @@ def subscribe(ws, pathlist):
             }
         ]
     }))
-    logger.debug('Subscribe: To start subscribe')
-    # Then subscribe to feed
+ #   logger.debug('Subscribe: To start subscribe')
+ 
+ # Then subscribe to feed
     subscribes = []
-    
     for path in pathlist:
         subscribes.append({
             'path': str(path),
