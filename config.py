@@ -1,20 +1,29 @@
 # -*- coding:utf-8 -*-
+
+import logging
+
 #signalk_host = 'localhost'
 signalk_host = 'raspberrypi400.local'
 signalk_port = 3000
 
-#Set to False for screen not having partial update, True for screens that has that
-# !!Partial updates not implemented!!
-#If set to true, slots will be updated in the backgroud but with not drawn to the display
-partial_update = False
+#Set the global logging level. This is also used by WaveShare code
+log_level = logging.WARNING
+#log_level = logging.DEBUG
 
-#Update speeds in ms, you may want to increase this for scren with no partial update as they do full
-#refresh each time
+# Set to False for screen not having partial update, True for screens that has
+# !!Partial updates not implemented!!
+#If set to true, slots will be updated in the backgroud but with not
+# drawn until a certain number of slots have been updated.
+partial_update = False
+partial_frame_limit = 20
+
+# Update speeds in miliiseconds, you may want to increase this for scren 
+# with no partial update as they do fullrefresh each time.
 #
-# Refreshtime for a display is quite long (seconds) for a full refresh, do not make this to short
-# if the screen is not using partial refresh.
-# As per WaveShare notes, refresh time should not be quicker than 180s
-loop_time_moving=20000
+# Refreshtime for a display is quite long (seconds) for a full refresh, 
+# do not make this too short if the screen is not using partial refresh.
+# As per WaveShare notes, refresh time should not be lower than 180s
+loop_time_moving=180000
 loop_time_anchor=300000
 loop_time_moored=600000
 

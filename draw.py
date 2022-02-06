@@ -227,7 +227,7 @@ class Draw:
             self.draw_text_field()
                 
 ## Draw alermessage between status and time
-        self.show_alertmessage('01234567890123456789012345678901234567')
+        self.show_alertmessage()
 
         flush_start = time.time()
 #        logger.debug('Before flush of display')

@@ -8,10 +8,9 @@ import time
 import atexit
 import logging
 import sys, traceback
+import config
 
-logging.basicConfig(level=logging.DEBUG)
-#logging.basicConfig(level=logging.WARNING)
-
+logging.basicConfig(level=config.log_level)
 logger = logging.getLogger(__name__)
 
 target = display.DrawTarget()
@@ -19,6 +18,8 @@ dashboard = draw.Draw(target)
 
 def on_message(ws, message):
     msg = json.loads(message)
+    logging.debug("on_message: Message is:" + str(message))
+                  
     if not "updates" in msg:
         return
     for update in msg["updates"]:

@@ -10,11 +10,11 @@ This project provides a dashboard view to telemetry from [Signal K](http://signa
 
 This can be used as generic display to show any data from Signal K and is not resticted by limitations of traditional NMEA2000 displays of what PGNs they can show.
 Do note that e-ink displays takes several seconds to do a full refresh and is not suitable for data changing by the second like COG,SOG etc.
-Of course, SignalK plugins that show averages (like SOG over several minutes) is doable. Data that is more static like tank status, weather, preassure, temperatures, battery SOC, voltage etc. are good candidates to show on this display.
-Certain e-ink screens can do partial refresh which might cope with data that changes by the second. Partial refreash is not implemeted as of now.
+Of course, SignalK plugins showing averages (like SOG over several minutes) is doable. Data that is more static like tank status, weather, preassure, temperatures, battery SOC, voltage etc. are good candidates to show on this display.
+Certain e-ink screens can do partial refresh which might cope with data that changes by the second. Partial refreash is _not_ implemeted as of now.
 
-This serves as a good complement to more traditional marine display units on a Signal K enabled vessel as it can replace tank gauges, voltage/SOC displays.
-It can also show non NMEA data such as NAVTEX messages or weather forcasts not possible on traditional plotters/displays.
+The display serves as a good complement to more traditional marine display units on a Signal K enabled vessel as it can replace tank gauges, voltage/SOC displays.
+It can also show non NMEA data such as NAVTEX messages or weather forcasts which is not possible on traditional plotters/displays.
 
 The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) weather display.
 
@@ -44,8 +44,7 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 ## TODO
 
 * Test with more data providers/conversions
+* Implement UTC->local TZ conversion
 * Implement partial redraw of the screen to cater for high frequency data
 * Ability to switch screen based on Bluetooth signal (or any other input like NMEA switch)
-* Design casing for the display and Raspberry Pi
-* (maybe) test outdoor usage
 * Implement listening to alarms and show them (and close when they are cancelled)

@@ -3,6 +3,7 @@ from waveshare_epd import epd7in5_V2
 import logging
 from PIL import Image
 import sys, traceback
+from config import partial_frame_limit
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ class DrawTarget:
         self.width = epd.width
         self.height = epd.height
         self.partial_frames = 0
-        self.partial_frame_limit = 20
+        self.partial_frame_limit = partial_frame_limit
         epd.init()
         self.insleep = False
         epd.Clear()
@@ -42,7 +43,6 @@ class DrawTarget:
         else:
             #_display_frame_quick(frame_buffer)
             self.partial_frames += 1
-        #Sleep after loading
 
 #Send display to sleep during normal operation to prolong its life
         if tosleep:
