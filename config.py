@@ -7,8 +7,8 @@ signalk_host = 'raspberrypi400.local'
 signalk_port = 3000
 
 #Set the global logging level. This is also used by WaveShare code
-log_level = logging.WARNING
-#log_level = logging.DEBUG
+#log_level = logging.WARNING
+log_level = logging.DEBUG
 
 # Set to False for screen not having partial update, True for screens that has
 # !!Partial updates not implemented!!
@@ -23,6 +23,7 @@ partial_frame_limit = 20
 # Refreshtime for a display is quite long (seconds) for a full refresh, 
 # do not make this too short if the screen is not using partial refresh.
 # As per WaveShare notes, refresh time should not be lower than 180s
+loop_time_alarm=15000
 loop_time_moving=180000
 loop_time_anchor=300000
 loop_time_moored=600000
@@ -66,13 +67,16 @@ dashboard = {
         'text_field_offset':325,
         'time_width':80,
         'time_height':40,
+## If alarm_screen is set to True, the program will listen to alarms
+## and switch to an alarm screen and show the alarms
+         'alarm_screen':True,
 
         'loading': {
             'text_field':False,
             'number_of_top_slots':0,
             'number_of_mid_slots':0,
             'number_of_slots':0,
-            'number_of_text_slots':2
+            'number_of_text_slots':0
         },
         'default': {
             'text_field':False,
@@ -108,10 +112,17 @@ dashboard = {
             'number_of_mid_slots':5,
             'number_of_slots':10,
             'number_of_text_slots':2
+        },
+        'alarm': {
+            'text_field':False,
+            'number_of_top_slots':0,
+            'number_of_mid_slots':0,
+            'number_of_slots':0,
+            'number_of_text_slots':0
         }
-        
     },
     'loading': {},
+    'alarm': {},
     'default': {
         # Top row (large text, max number_of_top_slots
         'navigation.speedOverGround': {

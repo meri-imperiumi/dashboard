@@ -1,15 +1,14 @@
-from waveshare_epd import epd7in5_V2
-#import epaperdummy
+#from waveshare_epd import epd7in5_V2
+import epaperdummy
 import logging
 from PIL import Image
-import sys, traceback
 from config import partial_frame_limit
 
 logger = logging.getLogger(__name__)
 
 #epd = epd4in2.EPD()
-epd = epd7in5_V2.EPD()
-#epd = epaperdummy.EPD()
+#epd = epd7in5_V2.EPD()
+epd = epaperdummy.EPD()
 
 class DrawTarget:
     def __init__(self):

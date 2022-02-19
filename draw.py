@@ -6,6 +6,7 @@ import dateutil.parser
 import time
 import math
 import timeinterval
+import alarm
 
 import config
 from config import dashboard
@@ -14,8 +15,8 @@ logger = logging.getLogger(__name__)
 
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
 
-display_font=os.path.join(fontdir, dashboard['assets']['display_font'])
-body_font=os.path.join(fontdir, dashboard['assets']['body_font'])
+display_font=os.path.join(str(fontdir), str(dashboard['assets']['display_font']))
+body_font=os.path.join(fontdir, str(dashboard['assets']['body_font']))
 
 display48 = ImageFont.truetype(display_font, 48)
 display24 = ImageFont.truetype(display_font, 24)
@@ -25,12 +26,15 @@ font24 = ImageFont.truetype(body_font, 24)
 text_field_font = ImageFont.truetype(body_font, 18)
 font12 = ImageFont.truetype(body_font, 12)
 
+alertfont = ImageFont.truetype(body_font, 24)
+
 splash = Image.open(os.path.join(fontdir, dashboard['assets']['splash']))
 
 class Draw:
     def __init__(self, target):
         self.target = target
         self.display = None
+        self.navigation_state = None
         self.expected_flush_time = 0
         self.values = {}
         self.drawing = False
@@ -38,19 +42,40 @@ class Draw:
         self.offset_x = 0
         self.offset_y = 0
         self.timer = None
-        self.alertmessage = None
+        self.info_message = None
+        self.alarm_mode = False
+        self.alarmhandler=alarm.Alarmhandler(alertfont,target.width,target.height)
 
     def set_display(self, display):
-        if self.display == display:
+        temp_display=display
+
+## New state change, but not alarm
+        if not display == "alarm" :
+            self.navigation_state=display
+
+## Show alarm screen if alarm
+        if self.alarmhandler.active_alarm() or display=='alarm':
+            temp_display = "alarm"
+
+## Alarm has stopped. Revert back to original
+        if (not self.alarmhandler.active_alarm()) and self.display=='alarm' :
+            temp_display = self.navigation_state
+
+## No change in displays, just return
+        if self.display == temp_display:
             return
-        logger.debug("Switching to {} display mode".format(display))
-        self.display = display
+        
+        logger.debug("Switching to {} display mode".format(temp_display))
+        self.display = temp_display
         self.variable_loop()
         self.prepare_display()
 
     def get_paths(self):
-        paths = list(dashboard[self.display])
+        paths = list(dashboard[str(self.display)])
         paths.append('navigation.state')
+        if dashboard['layout']['alarm_screen']:
+            paths.append('notifications.*')
+        logger.debug("Paths subscribed to:" + str(paths))
         return paths
 
     def show_message(self, msg):
@@ -60,11 +85,11 @@ class Draw:
         self.target.draw(image)
         self.draw_frame()
 
-    def set_alermessage(self,msg):
-        self.alertmessage = msg
+    def set_info_message(self,msg):
+        self.info_message = msg
     
-    def show_alertmessage(self, msg=None):
-        self.alertmessage = msg
+    def show_info_message(self, msg=None):
+        self.info_message = msg
         if msg :
             time_width = dashboard['layout']['time_width']
             time_height = dashboard['layout']['time_height']
@@ -81,6 +106,10 @@ class Draw:
             'time': dateutil.parser.parse(timestamp),
             'rendered': False
         }
+    
+    def update_alarm(self,msg,timestamp):
+        (self.alarm_mode,alarm_change)=self.alarmhandler.update_alarm(msg,timestamp)
+        return (self.alarm_mode,alarm_change)
 
     def prepare_slot_data(self, path):
         if not path in self.values:
@@ -91,7 +120,7 @@ class Draw:
                 'rendered': False
             }
         since_update = (datetime.datetime.now(datetime.timezone.utc) - self.values[path]['time']).total_seconds()
-        if dashboard[self.display][path] and since_update > dashboard[self.display][path]['max_age']:
+        if dashboard[str(self.display)][path] and since_update > dashboard[str(self.display)][path]['max_age']:
             #print("Setting path {} as stale".format(path))
             logger.info("Setting path {} as stale".format(path))
             # Stale value, switch to n/a
@@ -124,15 +153,17 @@ class Draw:
             dt=datetime.fromisoformat(value[0:len(value)-1])
             #Need to set to local time!
             return dt.strftime('%H:%M')
-
+    
+        return 'Undef conv.'
+    
     def draw_slot(self, path):
         self.prepare_slot_data(path)
         if self.values[path]['rendered'] == True:
             # No need to re-render
             return
-        slot = list(dashboard[self.display]).index(path)
-        label = dashboard[self.display][path]['label']
-        value = self.convert_value(self.values[path]['value'], dashboard[self.display][path]['conversion'])
+        slot = list(dashboard[str(self.display)]).index(path)
+        label = dashboard[str(self.display)][path]['label']
+        value = self.convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
 
         if dashboard['layout'][self.display]['number_of_slots'] == 0:
             return
@@ -173,14 +204,14 @@ class Draw:
         draw = ImageDraw.Draw(image)
         draw.text((0, 0), label.upper(), font=meta_font)
         draw.text((0, value_margin), value, font=value_font)
-        if 'unit' in str(dashboard[self.display][path]):
-            draw.text((0, unit_margin), dashboard[self.display][path]['unit'], font=meta_font)
+        if 'unit' in str(dashboard[str(self.display)][path]):
+            draw.text((0, unit_margin), dashboard[str(self.display)][path]['unit'], font=meta_font)
         self.target.draw(image, int(left_margin) + self.offset_x, top_margin + self.offset_y)
         self.values[path]['rendered'] = True
 
     def get_time(self):
         now = datetime.datetime.now() + datetime.timedelta(seconds=self.expected_flush_time)
-        return now.strftime(dashboard['time_format'])
+        return now.strftime(str(dashboard['time_format']))
 
     def update_time(self):
         time_width = dashboard['layout']['time_width']
@@ -195,15 +226,15 @@ class Draw:
             self.values[path]['rendered'] = False
         image = Image.new('1', (self.target.width, self.target.height), 1)
         draw = ImageDraw.Draw(image)
-
+        
         if self.display == 'loading':
-            iwidth, iheight = splash.size
-            image.paste(splash, (int((self.target.width-iwidth)/2), 5))
-
-        label = dashboard['name']
+            (iwidth, iheight) = splash.size
+            image.paste(splash, (int((self.target.width-iwidth)/2), dashboard['layout']['space_edges']))
+            #label = dashboard['name']
+        
         if self.display and self.display != 'default':
             label = self.display
-        draw.text((dashboard['layout']['space_edges'] + self.offset_x, self.target.height - dashboard['layout']['time_height'] -dashboard['layout']['space_edges']+ self.offset_y), label.upper(), font = display24, fill = 0)
+        draw.text((dashboard['layout']['space_edges'] + self.offset_x, self.target.height - dashboard['layout']['time_height'] -dashboard['layout']['space_edges']+ self.offset_y), str(label).upper(), font = display24, fill = 0)
 
         self.target.draw(image, 0, 0)
         self.draw_frame(True)
@@ -220,15 +251,22 @@ class Draw:
  #       logger.debug("State is:" + str(self.display))
         self.drawing = True
         self.update_time()
-        for path in dashboard[self.display]:
+        
+        for path in dashboard[str(self.display)]:
             self.draw_slot(path)
         #Add text field
-        if dashboard['layout'][self.display]['text_field']:
+        if dashboard['layout'][str(self.display)]['text_field']:
             self.draw_text_field()
                 
 ## Draw alermessage between status and time
-        self.show_alertmessage()
+        self.show_info_message()
 
+## Draw alarm screen if alarm is active
+        if self.display == 'alarm':
+            logger.debug("Alarm is to be drawn")
+            self.target.draw(self.alarmhandler.draw(),0,0)
+
+## Begin drawing to display
         flush_start = time.time()
 #        logger.debug('Before flush of display')
  
@@ -245,7 +283,7 @@ class Draw:
         logger.debug('After display has been flushed')
         flush_end = time.time()
         if flush_end > flush_start:
-            self.expected_flush_time = self.expected_flush_time * 0.9 + (flush_end - flush_start) * 0.1
+            self.expected_flush_time = int(self.expected_flush_time * 0.9 + (flush_end - flush_start) * 0.1)
         self.drawing = False
 
     def variable_loop(self):
@@ -257,6 +295,9 @@ class Draw:
             # Distance to anchor is also somewhat critical value
             logger.debug("Anchor:Setting update loop to:" + str(config.loop_time_anchor))
             self.loop(config.loop_time_anchor)
+        elif (self.display == "alarm"):
+            logger.debug("Alarm:Setting update loop to:" + str(config.loop_time_alarm))
+            self.loop(config.loop_time_alarm)           
         else:
             # If we're not moving it is fine to update less frequently
             logger.debug("Moored:Setting update loop to:" + str(config.loop_time_moored))
@@ -269,7 +310,7 @@ class Draw:
             # Stop previous timer
             self.timer.set()
             self.timer=None
-#        logger.debug("Setting new refresh rate to {}".format(refresh_rate))
+        logger.debug("Setting new refresh rate to {}".format(refresh_rate))
         self.timer = timeinterval.start(refresh_rate, self.draw_frame,not(config.partial_update))
 #        logger.debug('Exiting loop')
 
@@ -282,7 +323,7 @@ class Draw:
         image = Image.new('1', (self.target.width-2*dashboard['layout']['space_edges'], dashboard['layout']['text_field_height']), 1)
         draw = ImageDraw.Draw(image)
 
-        number_textslots = dashboard['layout'][self.display]['number_of_text_slots']
+        number_textslots = dashboard['layout'][str(self.display)]['number_of_text_slots']
         row_space = int(self.target.width-2*dashboard['layout']['space_edges']) / number_textslots
         slot_space = 20
 
@@ -290,11 +331,11 @@ class Draw:
         text_field_offset = dashboard['layout']['text_field_offset']
 
         text_slot = 0
-        for path in dashboard[self.display]:
-            slot = list(dashboard[self.display]).index(path)
-            if slot >= dashboard['layout'][self.display]['number_of_slots'] :
-                label = dashboard[self.display][path]['label']
-                value = self.convert_value(self.values[path]['value'], dashboard[self.display][path]['conversion'])
+        for path in dashboard[str(self.display)]:
+            slot = list(dashboard[str(self.display)]).index(path)
+            if slot >= dashboard['layout'][str(self.display)]['number_of_slots'] :
+                label = dashboard[str(self.display)][path]['label']
+                value = self.convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
                 drawtext = label + value
                 draw.text(((text_slot%number_textslots)*row_space, (text_slot//number_textslots)*slot_space), drawtext, font=text_field_font)
                 text_slot += 1
