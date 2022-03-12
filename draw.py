@@ -6,6 +6,7 @@ import dateutil.parser
 import time
 import math
 import timeinterval
+import timeconverter
 import alarm
 
 import config
@@ -214,6 +215,7 @@ class Draw:
         return now.strftime(str(dashboard['time_format']))
 
     def update_time(self):
+        
         time_width = dashboard['layout']['time_width']
         time_height = dashboard['layout']['time_height']
         image = Image.new('1', (time_width, time_height), 1)
@@ -222,6 +224,8 @@ class Draw:
         self.target.draw(image, self.target.width - dashboard['layout']['space_edges'] - time_width + self.offset_x, self.target.height - dashboard['layout']['space_edges'] - time_height + self.offset_y)
 
     def prepare_display(self):
+        
+        label= dashboard['name']
         for path in self.values:
             self.values[path]['rendered'] = False
         image = Image.new('1', (self.target.width, self.target.height), 1)
@@ -230,10 +234,11 @@ class Draw:
         if self.display == 'loading':
             (iwidth, iheight) = splash.size
             image.paste(splash, (int((self.target.width-iwidth)/2), dashboard['layout']['space_edges']))
-            #label = dashboard['name']
+            label = dashboard['name']
         
         if self.display and self.display != 'default':
             label = self.display
+        
         draw.text((dashboard['layout']['space_edges'] + self.offset_x, self.target.height - dashboard['layout']['time_height'] -dashboard['layout']['space_edges']+ self.offset_y), str(label).upper(), font = display24, fill = 0)
 
         self.target.draw(image, 0, 0)

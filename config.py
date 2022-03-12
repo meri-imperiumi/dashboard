@@ -82,7 +82,7 @@ dashboard = {
             'text_field':False,
             'number_of_top_slots':3,
             'number_of_mid_slots':5,
-            'number_of_slots':7,
+            'number_of_slots':8,
             'number_of_text_slots':2
         },
         'moored': {
@@ -144,16 +144,15 @@ dashboard = {
             'max_age': 30
         },
         # Mid rows (smaller text), max number_of_mid_slots
-        'environment.outside.temperature': {
-            'label': 'Temp',
+        'environment.forecast.temperature.dewpoint': {
+            'label': 'Dew',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 240
         },
-        'environment.outside.pressure': {
-            'label': 'Baro',
-            'unit': 'hPa',
-            'conversion': 'Pa',
+        'eenvironment.wind.speedApparent': {
+            'label': 'AWS',
+            'unit': 'm/s',
             'max_age': 240
         },
         'environment.outside.relativehumidity': {
@@ -166,6 +165,12 @@ dashboard = {
             'label': 'Inside',
             'unit': '°C',
             'conversion': 'K',
+            'max_age': 240
+        },
+        'environment.forecast.weather.clouds': {
+            'label': 'Clouds',
+            'unit': '%',
+            'conversion': '%',
             'max_age': 240
         }
     },

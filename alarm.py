@@ -10,6 +10,7 @@ import dateutil.parser
 import time
 import math
 import timeinterval
+import timeconverter
 
 import config
 from config import dashboard
@@ -25,7 +26,6 @@ class Alarmhandler:
         self.number_of_calls = 0
         self.values = {}
         self.font = alertfont
-        self.alerttext=""
         self.warningtext=""
         self.height=height
         self.width=width
@@ -37,12 +37,13 @@ class Alarmhandler:
 ## Have a local copy (list), if delta=0, remove item, otherwise overwrite
 ## Check number of alarms, if 0, set alarm_active to False otherwise true
 ## Need exception list of alarms not to react on but use info instead
+## Return touple (Active alarm (BOOL), Transition (TRUE of active alarm has changed since last)
     def update_alarm(self, msg, timestamp):
         logger.debug("Got an alarm message: " + str(msg))
-        logger.debug("Number of alarms:" + str(self.number_of_active))
+        logger.debug("Number of alarms before update:" + str(self.number_of_active))
         
 ## Handle notificatios that are not alarms (state {normal, nominal}
-## Handle notifications that are alamrs(still safe state:{alarm}
+## Handle notifications that are alarms(still safe state:{alert}
 ## Handle notifications that are important state:{warn,alarm,emergency}
 
         state = msg['value']['state']
@@ -60,8 +61,8 @@ class Alarmhandler:
             logger.debug("Removed alarm:" + str(msg['path']))
 
 ## We don't want to add normal/nominal messages, drop them
-        if state_group == 0 and (not msg['path'] in self.values):
-            logger.debug("Got notification normal/noninal not in DB. Drop it")
+#         if state_group == 0 and (not msg['path'] in self.values):
+#             logger.debug("Got notification normal/noninal not in DB. Drop it")
 
 ## Handle transitions of older notifications recieved
         if msg['path'] in self.values:
@@ -87,7 +88,6 @@ class Alarmhandler:
                     self.number_of_active += 1             
 ## It's a new alarm
         else:
-            logger.debug("New alarm.")
             if state_group == 1:
                 self.number_of_active_warn += 1
             if state_group == 2:
@@ -105,24 +105,53 @@ class Alarmhandler:
         
         old_alarm_active = self.alarm_active
         
-        if self.number_of_active==0 :
-            self.alarm_active = False
-        else:
-            self.alarm_active = True
+#         if self.number_of_active==0 :
+#             self.alarm_active = False
+#         else:
+#             self.alarm_active = True
+        self.alarm_active = (self.number_of_active>0)
 
-        logger.debug("Done update alarm. Status: Number of alarms:" + str(self.number_of_active) + " status:" + str(self.alarm_active))
+        logger.debug("Done update alarm. Status: Number of alarms:" + str(self.number_of_active) + " Alarm active status:" + str(self.alarm_active))
         logger.debug("Alarms:" + str(self.values))
+        logger.debug("Status change:" + str(not old_alarm_active == self.alarm_active))
         
         return (self.alarm_active, not old_alarm_active == self.alarm_active)
 
     def active_alarm(self):
-        return self.alarm_active
+        
+        warningtext=""
+        
+        if self.number_of_active_warn == 1:
+            warningtext="1 Warning"
+        
+        if self.number_of_active_warn > 1:
+            warningtext="Warnings:"+str(self.number_of_active_warn)
+        
+        return warningtext
     
  
 # Draw alarm message on buffer 
     def draw(self):
+        alerttext=""
+        j=0
         time_height = dashboard['layout']['time_height']
         image = Image.new('1', (self.width, self.height-time_height-dashboard['layout']['space_edges']) , 1)
         draw = ImageDraw.Draw(image)
-        draw.text((1,1), self.alerttext, font=self.font)
+     
+        for path in self.values:
+## Only draw alarms and emergencies
+                if self.values[path]['state_group']==2 :
+                        alarmtime=timeconverter.tconvert('%H:%M:%S',self.values[path]['time'])
+                        if j>0:
+                                alerttext+=("\n")
+                        alerttext+=self.values[path]['message']+"  Time: "+alarmtime
+                        j+=1
+                
+        logger.debug("Alarm text to draw:" + alerttext)    
+        draw.text((0,0), alerttext, font=self.font)
         return image
+    
+# Return warnings as a string
+    def get_warning(self):
+        return "Warning"
+

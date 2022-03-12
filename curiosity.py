@@ -21,7 +21,7 @@ def on_message(ws, message):
     nav_state_change=False
     
     msg = json.loads(message)
-    logging.debug("on_message: Message is:" + str(message))
+ #   logging.debug("on_message: Message is:" + str(message))
                   
     if not "updates" in msg:
         return
