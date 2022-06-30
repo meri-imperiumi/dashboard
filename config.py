@@ -12,7 +12,7 @@ log_level = logging.DEBUG
 
 # Set to False for screen not having partial update, True for screens that has
 # !!Partial updates not implemented!!
-#If set to true, slots will be updated in the backgroud but with not
+# If set to true, slots will be updated in the backgroud but with not
 # drawn until a certain number of slots have been updated.
 partial_update = False
 partial_frame_limit = 20
@@ -22,7 +22,7 @@ partial_frame_limit = 20
 #
 # Refreshtime for a display is quite long (seconds) for a full refresh, 
 # do not make this too short if the screen is not using partial refresh.
-# As per WaveShare notes, refresh time should not be lower than 180s
+# As per WaveShare notes, a full refresh time should not be lower than 180s
 loop_time_alarm=15000
 loop_time_moving=180000
 loop_time_anchor=300000
@@ -68,7 +68,7 @@ dashboard = {
         'time_width':80,
         'time_height':40,
 ## If alarm_screen is set to True, the program will listen to alarms
-## and switch to an alarm screen and show the alarms
+## and switch to an alarm screen and show the alarms until they are canceled
          'alarm_screen':True,
 
         'loading': {
@@ -103,11 +103,11 @@ dashboard = {
             'text_field':True,
             'number_of_top_slots':4,
             'number_of_mid_slots':5,
-            'number_of_slots':10,
+            'number_of_slots':12,
             'number_of_text_slots':2
         },
         'motoring': {
-            'text_field':False,
+            'text_field':True,
             'number_of_top_slots':4,
             'number_of_mid_slots':5,
             'number_of_slots':10,
@@ -150,7 +150,7 @@ dashboard = {
             'conversion': 'K',
             'max_age': 240
         },
-        'eenvironment.wind.speedApparent': {
+        'environment.wind.speedApparent': {
             'label': 'AWS',
             'unit': 'm/s',
             'max_age': 240
@@ -161,7 +161,7 @@ dashboard = {
             'conversion': '%',
             'max_age': 240
         },
-        'environment.inside.salon.temperature': {
+        'environment.inside.temperature': {
             'label': 'Inside',
             'unit': '°C',
             'conversion': 'K',
@@ -195,7 +195,7 @@ dashboard = {
             'max_age': 240
         },
         # Mid rows (smaller text), max number_of_mid_slots
-        'environment.inside.maincabin.temperature': {
+        'environment.inside.temperature': {
             'label': 'Inside',
             'unit': '°C',
             'conversion': 'K',
@@ -247,7 +247,7 @@ dashboard = {
             'conversion': '%',
             'max_age': 240
         },
-        'environment.inside.maincabin.temperature': {
+        'environment.inside.temperature': {
             'label': 'Inside',
             'unit': '°C',
             'conversion': 'K',
@@ -299,13 +299,13 @@ dashboard = {
             'conversion': 'K',
             'max_age': 240
         },
-        'environment.inside.mainCabin.relativeHumidity': {
+        'environment.inside.relativeHumidity': {
             'label': 'Humid',
             'unit': '%',
             'conversion': '%',
             'max_age': 240
         },
-        'environment.inside.mainCabin.temperature': {
+        'environment.inside.temperature': {
             'label': 'Inside',
             'unit': '°C',
             'conversion': 'K',
@@ -329,7 +329,19 @@ dashboard = {
             'conversion': 'Pa',
             'max_age': 240
         },
-        # Mid rows (smaller text), max number_of_mid_slots
+        'environment.forecast.wind.direction': {
+            'label': 'Pred TWD',
+            'unit': '°',
+            'conversion': 'rad',
+            'max_age': 11000
+        },
+        'environment.forecast.wind.speed': {
+            'label': 'Pred TWS',
+            'unit' : 'm/s',
+            'conversion':'.x',
+            'max_age':11000
+        },
+        # Text field
         'environment.outside.pressure.prediction.front.prognose': {
             'label': 'Overview:',
             'unit': 'hPa',

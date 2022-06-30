@@ -38,7 +38,7 @@ def on_message(ws, message):
 ## Navigation state change           
                                        
             if value["path"] == "navigation.state" :
-                if dashboard.display != value["value"]:
+                if dashboard.display != value["value"] and not dashboard.alarm_active():
                     logging.debug("Navigation state changed")
                     nav_state_change=True
                     new_state = value["value"]
@@ -50,10 +50,11 @@ def on_message(ws, message):
                 signalk.subscribe(ws, dashboard.get_paths())
             
             if alarm_change :
-                dashboard.set_display('alarm')
+                if alarm_active:
+                    dashboard.set_display('alarm')
                 signalk.subscribe(ws, dashboard.get_paths())
  #               dashboard.variable_loop()
-
+            
 
 
 def on_error(ws, error):

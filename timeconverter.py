@@ -1,4 +1,4 @@
-## Supporting functions to convert and beuify times
+## Supporting functions to convert and beutify times
 
 import logging
 from dateutil.parser import *

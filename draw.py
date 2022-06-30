@@ -8,7 +8,7 @@ import math
 import timeinterval
 import timeconverter
 import alarm
-
+import threading as th
 import config
 from config import dashboard
 
@@ -55,11 +55,11 @@ class Draw:
             self.navigation_state=display
 
 ## Show alarm screen if alarm
-        if self.alarmhandler.active_alarm() or display=='alarm':
+        if self.alarmhandler.has_active_alarm() or display=="alarm":
             temp_display = "alarm"
 
 ## Alarm has stopped. Revert back to original
-        if (not self.alarmhandler.active_alarm()) and self.display=='alarm' :
+        if (not self.alarmhandler.has_active_alarm()) and self.display=="alarm" :
             temp_display = self.navigation_state
 
 ## No change in displays, just return
@@ -70,6 +70,7 @@ class Draw:
         self.display = temp_display
         self.variable_loop()
         self.prepare_display()
+        self.draw_frame()
 
     def get_paths(self):
         paths = list(dashboard[str(self.display)])
@@ -88,7 +89,8 @@ class Draw:
 
     def set_info_message(self,msg):
         self.info_message = msg
-    
+ 
+ #Info message is a message in the footer between the status and time.It can be used for various purposes such as showing new NAVTEX messages
     def show_info_message(self, msg=None):
         self.info_message = msg
         if msg :
@@ -111,6 +113,9 @@ class Draw:
     def update_alarm(self,msg,timestamp):
         (self.alarm_mode,alarm_change)=self.alarmhandler.update_alarm(msg,timestamp)
         return (self.alarm_mode,alarm_change)
+    
+    def alarm_active(self):
+        return self.alarmhandler.has_active_alarm()
 
     def prepare_slot_data(self, path):
         if not path in self.values:
@@ -154,6 +159,8 @@ class Draw:
             dt=datetime.fromisoformat(value[0:len(value)-1])
             #Need to set to local time!
             return dt.strftime('%H:%M')
+        if conversion == '.x':
+            return "{0:.1f}".format(value)
     
         return 'Undef conv.'
     
@@ -244,6 +251,8 @@ class Draw:
         self.target.draw(image, 0, 0)
         self.draw_frame(True)
 
+    def draw_full_frame(self):
+        draw_frame(not(config.partial_update))
 
     def draw_frame(self, full = False):
 
@@ -252,8 +261,7 @@ class Draw:
         
         if self.drawing == True:
             return
- #       logger.debug("Draw frame called at:"+str(datetime.datetime.now()))
- #       logger.debug("State is:" + str(self.display))
+        
         self.drawing = True
         self.update_time()
         
@@ -316,8 +324,13 @@ class Draw:
             self.timer.set()
             self.timer=None
         logger.debug("Setting new refresh rate to {}".format(refresh_rate))
+# Redraw frame after 20 seconds to let some data come in to avoid N/As for a full cycle   
+        S = th.Timer(20.0, self.draw_frame,(not(config.partial_update),))  
+        S.start()  
+
+# Start a timer to continously to redraw the screen
         self.timer = timeinterval.start(refresh_rate, self.draw_frame,not(config.partial_update))
-#        logger.debug('Exiting loop')
+
 
     def clear_screen(self):
         self.drawing = True

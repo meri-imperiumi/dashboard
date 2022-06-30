@@ -117,7 +117,7 @@ class Alarmhandler:
         
         return (self.alarm_active, not old_alarm_active == self.alarm_active)
 
-    def active_alarm(self):
+    def active_warnings(self):
         
         warningtext=""
         
@@ -129,7 +129,12 @@ class Alarmhandler:
         
         return warningtext
     
- 
+# Return true if there are any active alarms
+    def has_active_alarm(self):
+    
+        return self.alarm_active
+
+
 # Draw alarm message on buffer 
     def draw(self):
         alerttext=""
