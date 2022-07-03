@@ -32,7 +32,7 @@ class DrawTarget:
             logger.debug('Drawing full frame')
             if self.insleep :
                 logger.debug('Wake up from sleep')
-                epd.init()
+  #              epd.init()
                 self.insleep = False
             epd.display(frame_buffer)
 # Debug , draw frame on screen
@@ -45,7 +45,7 @@ class DrawTarget:
 
 #Send display to sleep during normal operation to prolong its life
         if tosleep:
-            epd.sleep()
+  #          epd.sleep()
             self.insleep = True 
             
     def clear_screen(self):

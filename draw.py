@@ -20,14 +20,14 @@ display_font=os.path.join(str(fontdir), str(dashboard['assets']['display_font'])
 body_font=os.path.join(fontdir, str(dashboard['assets']['body_font']))
 
 display48 = ImageFont.truetype(display_font, 48)
-display24 = ImageFont.truetype(display_font, 24)
-display12 = ImageFont.truetype(display_font, 12)
+display24 = ImageFont.truetype(display_font, 26)
+display12 = ImageFont.truetype(display_font, 14)
 font48 = ImageFont.truetype(body_font, 48)
-font24 = ImageFont.truetype(body_font, 24)
+font24 = ImageFont.truetype(body_font, 26)
 text_field_font = ImageFont.truetype(body_font, 18)
-font12 = ImageFont.truetype(body_font, 12)
+font12 = ImageFont.truetype(body_font, 14)
 
-alertfont = ImageFont.truetype(body_font, 24)
+alertfont = ImageFont.truetype(body_font, 48)
 
 splash = Image.open(os.path.join(fontdir, dashboard['assets']['splash']))
 
@@ -184,7 +184,7 @@ class Draw:
             value_font = font48
             slot_pos = slot
             top_margin = dashboard['layout']['space_edges']
-            left_margin = slot_pos * width + 2
+            left_margin = slot_pos * width + dashboard['layout']['space_edges']
             value_margin = 30
             unit_margin = 75
 # Draw middle row slots (the smaller ones)
@@ -201,7 +201,7 @@ class Draw:
             else:
                 slot_pos = slot - dashboard['layout'][self.display]['number_of_top_slots']-dashboard['layout'][self.display]['number_of_mid_slots']
                 top_margin = dashboard['layout']['space_edges'] + dashboard['layout']['first_row_height'] + 2*dashboard['layout']['space_row'] + height
-            left_margin = slot_pos * width + 2
+            left_margin = slot_pos * width + dashboard['layout']['space_edges']
             value_margin = 20
             unit_margin = 45
         else:
@@ -324,9 +324,11 @@ class Draw:
             self.timer.set()
             self.timer=None
         logger.debug("Setting new refresh rate to {}".format(refresh_rate))
-# Redraw frame after 20 seconds to let some data come in to avoid N/As for a full cycle   
-        S = th.Timer(20.0, self.draw_frame,(not(config.partial_update),))  
-        S.start()  
+# Redraw frame after 20 seconds to let some data come in to avoid N/As for a full cycle
+# however, don't do this for alarms as there is no data and short refresh
+        if (self.display != "alarm"):
+            S = th.Timer(20.0, self.draw_frame,(not(config.partial_update),))  
+            S.start()  
 
 # Start a timer to continously to redraw the screen
         self.timer = timeinterval.start(refresh_rate, self.draw_frame,not(config.partial_update))

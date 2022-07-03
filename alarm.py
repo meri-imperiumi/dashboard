@@ -1,7 +1,8 @@
 ## This module parses messages and converts those into text to be drawn
 ## on the screen. First the messages are parsed, then the module is called
 ## when the screen is to be drawn
-## The module has two different ways to show notificatios, Alert screen or use the spave between statusmode and clock (for non-critical)
+## The module has two different ways to show notificatios, Alert screen or 
+## warnings that use the space between statusmode and clock (for non-critical)
 
 from PIL import Image,ImageDraw,ImageFont
 import logging
@@ -39,16 +40,16 @@ class Alarmhandler:
 ## Need exception list of alarms not to react on but use info instead
 ## Return touple (Active alarm (BOOL), Transition (TRUE of active alarm has changed since last)
     def update_alarm(self, msg, timestamp):
+        state_change = False
         logger.debug("Got an alarm message: " + str(msg))
         logger.debug("Number of alarms before update:" + str(self.number_of_active))
         
 ## Handle notificatios that are not alarms (state {normal, nominal}
 ## Handle notifications that are alarms(still safe state:{alert}
 ## Handle notifications that are important state:{warn,alarm,emergency}
-
         state = msg['value']['state']
         state_group=states[state]
-        new_notification = False
+        time_update = False
 
 ## Empty value of a previous alarm (should indicate to remove notification)     
         if not msg['value'] and msg['path'] in self.values:
@@ -80,24 +81,29 @@ class Alarmhandler:
 ## Transition from alarm (2)-> alert (1)
                 if self.values[msg['path']]['state_group']==2 :
                     self.number_of_active_warn+=1
-                    self.number_of_active -= 1           
+                    self.number_of_active -= 1
+                time_update = True
             else:
 ## Transition from alarm (1)-> alert (2)
                 if self.values[msg['path']]['state_group']==1 :
                     self.number_of_active_warn-=1
-                    self.number_of_active += 1             
+                    self.number_of_active += 1
+                time_update = True
+                alarmtime=self.values[msg['path']]['time']
 ## It's a new alarm
         else:
+            time_update = True
             if state_group == 1:
                 self.number_of_active_warn += 1
             if state_group == 2:
                 self.number_of_active += 1
+            alarmtime=dateutil.parser.parse(timestamp)
 
 ## Update internal list if an alarm or alert
         if state_group !=0 :
             self.values[msg['path']] = {
                     'message': msg['value']['message'],
-                    'time': dateutil.parser.parse(timestamp),
+                    'time': alarmtime,
                     'state': state,
                     'state_group': state_group,
                     'rendered': False
@@ -105,10 +111,6 @@ class Alarmhandler:
         
         old_alarm_active = self.alarm_active
         
-#         if self.number_of_active==0 :
-#             self.alarm_active = False
-#         else:
-#             self.alarm_active = True
         self.alarm_active = (self.number_of_active>0)
 
         logger.debug("Done update alarm. Status: Number of alarms:" + str(self.number_of_active) + " Alarm active status:" + str(self.alarm_active))
@@ -125,7 +127,7 @@ class Alarmhandler:
             warningtext="1 Warning"
         
         if self.number_of_active_warn > 1:
-            warningtext="Warnings:"+str(self.number_of_active_warn)
+            warningtext=str(self.number_of_active_warn)+" Warnings"
         
         return warningtext
     
@@ -149,7 +151,7 @@ class Alarmhandler:
                         alarmtime=timeconverter.tconvert('%H:%M:%S',self.values[path]['time'])
                         if j>0:
                                 alerttext+=("\n")
-                        alerttext+=self.values[path]['message']+"  Time: "+alarmtime
+                        alerttext+=self.values[path]['message']+"  "+alarmtime
                         j+=1
                 
         logger.debug("Alarm text to draw:" + alerttext)    

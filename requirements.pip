@@ -5,3 +5,4 @@ websocket-client
 python-dateutil
 timeinterval
 logging
+pytz
