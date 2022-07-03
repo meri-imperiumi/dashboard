@@ -17,8 +17,11 @@ target = display.DrawTarget()
 dashboard = draw.Draw(target)
 
 def on_message(ws, message):
+    alarm_change=False
+    nav_state_change=False
+    
     msg = json.loads(message)
-    logging.debug("on_message: Message is:" + str(message))
+ #   logging.debug("on_message: Message is:" + str(message))
                   
     if not "updates" in msg:
         return
@@ -26,13 +29,33 @@ def on_message(ws, message):
         for value in update["values"]:
             if str(value) == "{}":
                 break
-            if value["path"] == "navigation.state":
-                if dashboard.display != value["value"]:
-                    dashboard.set_display(value["value"])
-                    signalk.subscribe(ws, dashboard.get_paths())
-                    dashboard.variable_loop()
+
+## Look for new alarms
+            if "notifications." in value["path"]:
+                (alarm_active,alarm_change)=dashboard.update_alarm(value,update["timestamp"])
+                logging.debug("Found notification in message. Alarm change;" +str(alarm_change))
+                
+## Navigation state change           
+                                       
+            if value["path"] == "navigation.state" :
+                if dashboard.display != value["value"] and not dashboard.alarm_active():
+                    logging.debug("Navigation state changed")
+                    nav_state_change=True
+                    new_state = value["value"]
             else:
                 dashboard.update_value(value, update["timestamp"])
+                
+            if nav_state_change:
+                dashboard.set_display(value["value"])
+                signalk.subscribe(ws, dashboard.get_paths())
+            
+            if alarm_change :
+                if alarm_active:
+                    dashboard.set_display('alarm')
+                signalk.subscribe(ws, dashboard.get_paths())
+ #               dashboard.variable_loop()
+            
+
 
 def on_error(ws, error):
     message = str(error)

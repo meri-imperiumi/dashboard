@@ -2,17 +2,17 @@
 
 import logging
 
-#signalk_host = 'localhost'
-signalk_host = 'raspberrypi400.local'
+signalk_host = 'localhost'
+#signalk_host = 'raspberrypi400.local'
 signalk_port = 3000
 
 #Set the global logging level. This is also used by WaveShare code
-log_level = logging.WARNING
-#log_level = logging.DEBUG
+#log_level = logging.WARNING
+log_level = logging.DEBUG
 
 # Set to False for screen not having partial update, True for screens that has
 # !!Partial updates not implemented!!
-#If set to true, slots will be updated in the backgroud but with not
+# If set to true, slots will be updated in the backgroud but with not
 # drawn until a certain number of slots have been updated.
 partial_update = False
 partial_frame_limit = 20
@@ -22,7 +22,8 @@ partial_frame_limit = 20
 #
 # Refreshtime for a display is quite long (seconds) for a full refresh, 
 # do not make this too short if the screen is not using partial refresh.
-# As per WaveShare notes, refresh time should not be lower than 180s
+# As per WaveShare notes, a full refresh time should not be lower than 180s
+loop_time_alarm=30000
 loop_time_moving=180000
 loop_time_anchor=300000
 loop_time_moored=600000
@@ -51,45 +52,60 @@ loop_time_moored=600000
 
 dashboard = {
     'name': 'Elinor',
-    'time_format': '%H:%M',
+
     'assets': {
         'display_font': 'nasalization-rg.otf',
         'body_font': 'Eurostile.ttf',
         'splash': 'signalK.bmp'
     },
+
+# Timeformat. Enable use of GPS (navigation.position) to get the right timezone
+# when converting from UTC. Also det the default timezone.
+# GPS based timezone not implemented
+#        'TZ_conversion_use_GPS':False,
+        'time_format': '%H:%M',
+        'TZ_default_name': 'CEST',
+        'TZ_default_offset': 2*3600,
+
     'layout': {
         'first_row_height': 130,
         'space_row':10,
-        'space_edges':5,
+        'space_edges':7,
         'other_row_height': 80,
         'text_field_height':100,
         'text_field_offset':325,
         'time_width':80,
         'time_height':40,
+## If alarm_screen is set to True, the program will listen to alarms
+## and switch to an alarm screen and show the alarms until they are canceled
+         'alarm_screen':True,
+
+
+
 
         'loading': {
             'text_field':False,
             'number_of_top_slots':0,
             'number_of_mid_slots':0,
             'number_of_slots':0,
-            'number_of_text_slots':2
+            'number_of_text_slots':0
         },
         'default': {
             'text_field':False,
-            'number_of_top_slots':3,
-            'number_of_mid_slots':5,
-            'number_of_slots':7,
-            'number_of_text_slots':2
+            'number_of_top_slots':0,
+            'number_of_mid_slots':0,
+            'number_of_slots':0,
+            'number_of_text_slots':0
         },
         'moored': {
-            'text_field':False,
+            'text_field':True,
             'number_of_top_slots':3,
             'number_of_mid_slots':4,
             'number_of_slots':7,
             'number_of_text_slots':2
         },
         'anchored': {
-            'text_field':False,
+            'text_field':True,
             'number_of_top_slots':4,
             'number_of_mid_slots':5,
             'number_of_slots':10,
@@ -99,65 +115,29 @@ dashboard = {
             'text_field':True,
             'number_of_top_slots':4,
             'number_of_mid_slots':5,
-            'number_of_slots':10,
+            'number_of_slots':13,
             'number_of_text_slots':2
         },
         'motoring': {
-            'text_field':False,
+            'text_field':True,
             'number_of_top_slots':4,
             'number_of_mid_slots':5,
             'number_of_slots':10,
             'number_of_text_slots':2
+        },
+        'alarm': {
+            'text_field':False,
+            'number_of_top_slots':0,
+            'number_of_mid_slots':0,
+            'number_of_slots':0,
+            'number_of_text_slots':0
         }
-        
     },
+
+## Screen content
     'loading': {},
-    'default': {
-        # Top row (large text, max number_of_top_slots
-        'navigation.speedOverGround': {
-            'label': 'SOG',
-            'unit': 'kn',
-            'conversion': 'm/s',
-            'max_age': 30
-        },
-        'navigation.courseOverGroundTrue': {
-            'label': 'COG',
-            'unit': '°',
-            'conversion': 'rad',
-            'max_age': 30
-        },
-        'environment.depth.belowTransducer': {
-            'label': 'Depth',
-            'unit': 'm',
-            'conversion': 'm',
-            'max_age': 30
-        },
-        # Mid rows (smaller text), max number_of_mid_slots
-        'environment.outside.temperature': {
-            'label': 'Temp',
-            'unit': '°C',
-            'conversion': 'K',
-            'max_age': 240
-        },
-        'environment.outside.pressure': {
-            'label': 'Baro',
-            'unit': 'hPa',
-            'conversion': 'Pa',
-            'max_age': 240
-        },
-        'environment.outside.relativehumidity': {
-            'label': 'Humid',
-            'unit': '%',
-            'conversion': '%',
-            'max_age': 240
-        },
-        'environment.inside.salon.temperature': {
-            'label': 'Inside',
-            'unit': '°C',
-            'conversion': 'K',
-            'max_age': 240
-        }
-    },
+    'alarm': {},
+    'default': {},
    'moored': {
         # Top row (large text, max number_of_top_slots
         'environment.outside.temperature': {
@@ -166,12 +146,14 @@ dashboard = {
             'conversion': 'K',
             'max_age': 240
         },
+        #2
         'environment.outside.pressure': {
             'label': 'Baro',
             'unit': 'hPa',
             'conversion': 'Pa',
             'max_age': 240
         },
+        #3
         'environment.outside.relativeHumidity': {
             'label': 'Humid',
             'unit': '%',
@@ -179,30 +161,40 @@ dashboard = {
             'max_age': 240
         },
         # Mid rows (smaller text), max number_of_mid_slots
-        'environment.inside.maincabin.temperature': {
+        'environment.inside.temperature': {
             'label': 'Inside',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 240
         },
+        #1,2
         'environment.inside.refrigerator.temperature': {
             'label': 'Fridge',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 240
         },
+        #1,3
         'environment.inside.freezer.temperature': {
             'label': 'Champagne',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 240
         },
+        #1,4
         'environment.inside.engineRoom.temperature': {
             'label': 'Beer',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 240
         }
+        #1,5
+        #2,1
+        #2,2
+        #2,3
+        #2,4
+        #2,5
+        
    },
    'anchored': {
         # Top row (large text, max number_of_top_slots
@@ -212,12 +204,14 @@ dashboard = {
             'conversion': 'm',
             'max_age': 30
         },
+        #2
         'environment.outside.temperature': {
             'label': 'Temp',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 240
         },
+        #3
         'environment.outside.pressure': {
             'label': 'Baro',
             'unit': 'hPa',
@@ -231,24 +225,34 @@ dashboard = {
             'conversion': '%',
             'max_age': 240
         },
-        'environment.inside.maincabin.temperature': {
+        #1,2
+        'environment.inside.temperature': {
             'label': 'Inside',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 240
         },
+        #1,3
         'environment.inside.refrigerator.temperature': {
             'label': 'Fridge',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 240
         },
+        #1,4
         'environment.inside.freezer.temperature': {
             'label': 'Champagne',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 240
         }
+        #1,5
+        #2,1
+        #2,2
+        #2,3
+        #2,4
+        #2,5
+    # Text Fields
    },
   'sailing': {
         # Top row (large text, max number_of_top_slots
@@ -258,18 +262,21 @@ dashboard = {
             'conversion': 'm/s',
             'max_age': 30
         },
+        #2
         'navigation.courseOverGroundTrue': {
             'label': 'COG',
             'unit': '°',
             'conversion': 'rad',
             'max_age': 30
         },
+        #3
         'environment.outside.pressure': {
             'label': 'Baro',
             'unit': 'hPa',
             'conversion': 'Pa',
             'max_age': 240
         },
+        #4
             'environment.outside.relativeHumidity': {
             'label': 'Humid',
             'unit': '%',
@@ -283,37 +290,64 @@ dashboard = {
             'conversion': 'K',
             'max_age': 240
         },
-        'environment.inside.mainCabin.relativeHumidity': {
+        #1,2
+        'environment.inside.relativeHumidity': {
             'label': 'Humid',
             'unit': '%',
             'conversion': '%',
             'max_age': 240
         },
-        'environment.inside.mainCabin.temperature': {
+        #1,3
+        'environment.inside.temperature': {
             'label': 'Inside',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 240
         },
+        #1,4
         'environment.inside.freezer.temperature': {
             'label': 'Champagne',
             'unit': '°C',
             'conversion': 'K',
             'max_age': 240
         },
+        #1,5
         'environment.depth.belowTransducer': {
             'label': 'Depth',
             'unit': 'm',
             'conversion': 'm',
             'max_age': 30
         },
+        #2.1
         'environment.outside.pressure.1hr': {
             'label': 'Baro 1hr',
             'unit': 'hPa',
             'conversion': 'Pa',
             'max_age': 240
         },
-        # Mid rows (smaller text), max number_of_mid_slots
+        #2,2
+        'environment.forecast.wind.direction': {
+            'label': 'Pred TWD',
+            'unit': '°',
+            'conversion': 'rad',
+            'max_age': 11000
+        },
+        #2,3
+        'environment.forecast.wind.speed': {
+            'label': 'Pred TWS',
+            'unit' : 'm/s',
+            'conversion':'.x',
+            'max_age':11000
+        },
+        #2,4
+        'environment.forecast.description': {
+            'label': 'Forecast',
+            'unit' : '',
+            'conversion': None,
+            'max_age':11000
+        },
+        #2,5
+        ## Text field
         'environment.outside.pressure.prediction.front.prognose': {
             'label': 'Overview:',
             'unit': 'hPa',
@@ -361,7 +395,7 @@ dashboard = {
             'unit': 'hPa',
             'conversion': False,
             'max_age': 240
-        },
+        }
     },
     'motoring': {
     }  

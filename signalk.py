@@ -11,6 +11,7 @@ def get_state():
     url = 'http://{}:{}/signalk/v1/api/vessels/self/navigation/state/value'.format(signalk_host, signalk_port)
     req = urllib.request.Request(url)
     try:
+        logger.info("Connecting to:" + url)
         r = urllib.request.urlopen(req).read()
         cont = json.loads(r.decode('utf-8'))
         logger.debug("Initial state {}".format(cont))
