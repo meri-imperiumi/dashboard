@@ -1,12 +1,12 @@
-[Service]
-WorkingDirectory=/home/pi/eink-dashboard
-ExecStart=/usr/bin/python3 curiosity.py
-Restart=always
-RestartSec=30
-User=pi
-
 [Unit]
-After=network-online.target
+Description=eInk display connected to a SignalK
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/pi/hal/curiosity.py
+ExecStop=/usr/bin/pkill -INT curiosity.py
+ExecStopPost=/usr/bin/python3 /home/pi/hal/clean_display.py
 
 [Install]
 WantedBy=multi-user.target
