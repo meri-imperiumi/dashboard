@@ -7,8 +7,8 @@ signalk_host = 'localhost'
 signalk_port = 3000
 
 #Set the global logging level. This is also used by WaveShare code
-#log_level = logging.WARNING
-log_level = logging.DEBUG
+log_level = logging.WARNING
+#log_level = logging.DEBUG
 
 # Set to False for screen not having partial update, True for screens that has
 # !!Partial updates not implemented!!
