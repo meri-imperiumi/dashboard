@@ -13,8 +13,10 @@ Do note that e-ink displays takes several seconds to do a full refresh and is no
 Of course, SignalK plugins showing averages (like SOG over several minutes) is doable. Data that is more static like tank status, weather, preassure, temperatures, battery SOC, voltage etc. are good candidates to show on this display.
 Certain e-ink screens can do partial refresh which might cope with data that changes by the second. Partial refreash is _not_ implemeted as of now.
 
-The display can be configured to show alarms and shows them
-on a separate screen. The display resumes operation when the alarms are no longer critical. 
+The display can be configured to show alarms and shows them on a separate screen.
+The display resumes operation when the alarms are no longer critical. 
+
+There is also a possibility to use a text field which as suitable fror longer text such as weather forcasts. The text is shown in two collums.
 
 The display serves as a good complement to more traditional marine display units on a Signal K enabled vessel as it can replace tank gauges, voltage/SOC displays.
 It can also show non NMEA data such as NAVTEX messages or weather forcasts which is not possible on traditional plotters/displays.
@@ -42,11 +44,8 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 * Install the other dependencies from `requirements.pip`
 * Set up fonts and splash screen you want to use to the `assets` folder
 * Edit `config.py` to your liking
+* Modify 'disply.py' and select the correct display.
 * Copy the systemd unit file to `/lib/systemd/system` and start it
 
 ## TODO
-
-* Test with more data providers
-* Implement partial redraw of the screen to cater for high frequency data
-* Ability to switch screen based on Bluetooth signal (or any other input like NMEA switch)
 
