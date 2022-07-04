@@ -44,8 +44,8 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 * Install the other dependencies from `requirements.pip`
 * Set up fonts and splash screen you want to use to the `assets` folder
 * Edit `config.py` to your liking
-* Modify 'disply.py' and select the correct display.
-* Copy the systemd unit file to `/lib/systemd/system` and start it
+* Modify 'display.py' and select the correct display.
+* Copy the systemd unit file to `/lib/systemd/system`. Verify/update filepaths to the program. Start it
 
 ## TODO
 
