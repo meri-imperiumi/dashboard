@@ -11,6 +11,7 @@ import alarm
 import threading as th
 import config
 from config import dashboard
+import convert
 
 logger = logging.getLogger(__name__)
 
@@ -137,31 +138,32 @@ class Draw:
             }
 
     def convert_value(self, value, conversion = None):
-        if value == None:
-            return 'N/A'
-        if not conversion:
-            return str(value)
-        if conversion == 'K':
-            return "{0:.1f}".format(value - 273.15)
-        if conversion == 'm':
-            return "{0:.1f}".format(value)
-        if conversion == 'int':
-            return str(int(value))
-        if conversion == '%':
-            return str(int(value * 100))
-        if conversion == 'Pa':
-            return str(int(value / 100))
-        if conversion == 'rad':
-            return str(int(math.degrees(value)))
-        if conversion == 'm/s':
-            return "{0:.1f}".format(value * 1.944)
-        if conversion == 'Z':
-            dt=datetime.fromisoformat(value[0:len(value)-1])
-            #Need to set to local time!
-            return dt.strftime('%H:%M')
-        if conversion == '.x':
-            return "{0:.1f}".format(value)
-    
+##    def convert_value(self, value, conversion = None):
+##        if value == None:
+##            return 'N/A'
+##        if not conversion:
+##            return str(value)
+##        if conversion == 'K':
+##            return "{0:.1f}".format(value - 273.15)
+##        if conversion == 'm':
+##            return "{0:.1f}".format(value)
+##        if conversion == 'int':
+##            return str(int(value))
+##        if conversion == '%':
+##            return str(int(value * 100))
+##        if conversion == 'Pa':
+##            return str(int(value / 100))
+##        if conversion == 'rad':
+##            return str(int(math.degrees(value)))
+##        if conversion == 'm/s':
+##            return "{0:.1f}".format(value * 1.944)
+##        if conversion == 'Z':
+##            dt=datetime.fromisoformat(value[0:len(value)-1])
+##            #Need to set to local time!
+##            return dt.strftime('%H:%M')
+##        if conversion == '.x':
+##            return "{0:.1f}".format(value)
+##    
         return 'Undef conv.'
     
     def draw_slot(self, path):
@@ -171,7 +173,7 @@ class Draw:
             return
         slot = list(dashboard[str(self.display)]).index(path)
         label = dashboard[str(self.display)][path]['label']
-        value = self.convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
+        value = convert.convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
 
         if dashboard['layout'][self.display]['number_of_slots'] == 0:
             return
