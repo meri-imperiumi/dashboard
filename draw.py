@@ -137,7 +137,6 @@ class Draw:
                 'rendered': False
             }
 
-    def convert_value(self, value, conversion = None):
 ##    def convert_value(self, value, conversion = None):
 ##        if value == None:
 ##            return 'N/A'
