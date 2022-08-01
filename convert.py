@@ -1,6 +1,6 @@
 import logging
 import datetime
-import dateutil.parser
+#import dateutil.parser
 import time
 import math
 import timeconverter
@@ -26,11 +26,25 @@ def convert_value(self, value, conversion = None):
         return str(int(math.degrees(value)))
     if conversion == 'm/s_knots':
         return "{0:.1f}".format(value * 1.944)
-    if conversion == 'Z_local':
-        dt=datetime.fromisoformat(value[0:len(value)-1])
-        #Need to set to local time!
-        return dt.strftime('%H:%M')
+    if conversion == 'm_NM':
+        return "{0:.1f}".format(value / 1852)
+    if conversion == 'Z_local_2':
+        return tconvert('%H:%M',value)
+    if conversion == 'Z_local_3':
+        return tconvert('%H:%M:%S',value)
     if conversion == '.x':
         return "{0:.1f}".format(value)
+    if conversion == '.xx':
+        return "{0:.2f}".format(value)
 
     return 'Undef conv.'
+
+def tconvert(self, printformat,dtvalue, latlon=None):
+
+    timeoffset=int(dashboard['TZ_default_offset'])
+    l_zone=timezone(timedelta(seconds=timeoffset))
+    
+    utc_value=datetime.fromisoformat(utc_time[0:len(dtvalue)-1] + "+00:00")
+    local_value=dtvalue.astimezone(l_zone)
+
+    return local_value.strftime(printformat)
