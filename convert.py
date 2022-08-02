@@ -36,7 +36,18 @@ def convert_value(self, value, conversion = None):
         return "{0:.1f}".format(value)
     if conversion == '.xx':
         return "{0:.2f}".format(value)
-
+##Older conversions for backward compability
+    if conversion == 'Pa':
+        return str(int(value / 100))
+    if conversion == 'rad':
+        return str(int(math.degrees(value)))
+    if conversion == 'm/s':
+        return "{0:.1f}".format(value * 1.944)
+    if conversion == 'K':
+        return "{0:.1f}".format(value - 273.15)
+    if conversion == 'm':
+        return "{0:.1f}".format(value)
+## Default if no conversions was found
     return 'Undef conv.'
 
 def tconvert(self, printformat,dtvalue, latlon=None):

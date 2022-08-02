@@ -2,8 +2,9 @@
 
 import logging
 
-signalk_host = 'localhost'
+#signalk_host = 'localhost'
 #signalk_host = 'raspberrypi400.local'
+signalk_host = 'hal.local'
 signalk_port = 3000
 
 #Set the global logging level. This is also used by WaveShare code

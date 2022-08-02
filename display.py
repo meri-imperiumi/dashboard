@@ -1,5 +1,6 @@
 #from waveshare_epd import epd7in5_V2
 import epaperdummy
+
 import logging
 from PIL import Image
 from config import partial_frame_limit
