@@ -11,6 +11,7 @@ import alarm
 import threading as th
 import config
 from config import dashboard
+import convert
 
 logger = logging.getLogger(__name__)
 
@@ -171,7 +172,7 @@ class Draw:
             return
         slot = list(dashboard[str(self.display)]).index(path)
         label = dashboard[str(self.display)][path]['label']
-        value = self.convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
+        value = convert.convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
 
         if dashboard['layout'][self.display]['number_of_slots'] == 0:
             return

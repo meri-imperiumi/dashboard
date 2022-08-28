@@ -33,8 +33,10 @@
 
 
 import logging
-from waveshare_epd import epdconfig
+#from waveshare_epd import epdconfig
 #from . import epdconfig
+
+import time
 
 # Display resolution
 EPD_WIDTH       = 800
@@ -70,7 +72,9 @@ class EPD:
         while(busy == 0):
             self.send_command(0x71)
             busy = 1
-        epdconfig.delay_ms(20)
+#        epdconfig.delay_ms(20)
+            time.sleep(0.02)
+
         logger.debug("e-Paper busy release")
         
     def SetLut(self, lut_vcom, lut_ww, lut_bw, lut_wb, lut_bb):
@@ -100,10 +104,9 @@ class EPD:
         return image
 
     def display(self, image):
-
         image.show()
-        epdconfig.delay_ms(100)
-
+        time.sleep(0.1)
+#        epdconfig.delay_ms(100)
 
     def Clear(self):
         buf = [0x00] * (int(self.width/8) * self.height)
@@ -111,7 +114,7 @@ class EPD:
 
     def sleep(self):
         logger.debug("Display sleep")
-        epdconfig.delay_ms(2000)
+ #       epdconfig.delay_ms(2000)
+        time.sleep(2)
 
 ### END OF FILE ###
-
