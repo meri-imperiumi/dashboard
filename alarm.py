@@ -4,16 +4,16 @@
 ## The module has two different ways to show notificatios, Alert screen or 
 ## warnings that use the space between statusmode and clock (for non-critical)
 
-from PIL import Image,ImageDraw,ImageFont
+from PIL import ImageDraw,Image
 import logging
-import datetime
+#import datetime
 import dateutil.parser
-import time
-import math
-import timeinterval
+#import time
+#import math
+#import timeinterval
 import timeconverter
 
-import config
+#import config
 from config import dashboard
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ class Alarmhandler:
 ## Need exception list of alarms not to react on but use info instead
 ## Return touple (Active alarm (BOOL), Transition (TRUE of active alarm has changed since last)
     def update_alarm(self, msg, timestamp):
-        state_change = False
+#        state_change = False
         logger.debug("Got an alarm message: " + str(msg))
         logger.debug("Number of alarms before update:" + str(self.number_of_active))
         
@@ -49,7 +49,7 @@ class Alarmhandler:
 ## Handle notifications that are important state:{warn,alarm,emergency}
         state = msg['value']['state']
         state_group=states[state]
-        time_update = False
+#        time_update = False
 
 ## Empty value of a previous alarm (should indicate to remove notification)     
         if not msg['value'] and msg['path'] in self.values:
@@ -141,21 +141,21 @@ class Alarmhandler:
     def draw(self):
         alerttext=""
         j=0
-        time_height = dashboard['layout']['time_height']
-        image = Image.new('1', (self.width, self.height-time_height-dashboard['layout']['space_edges']) , 1)
+        time_height = int(dashboard['layout']['time_height'])
+        image = Image.new('1', (self.width, self.height-time_height-int(dashboard['layout']['space_edges'])) , 1)
         draw = ImageDraw.Draw(image)
      
         for path in self.values:
 ## Only draw alarms and emergencies
-                if self.values[path]['state_group']==2 :
-                        alarmtime=timeconverter.tconvert('%H:%M:%S',self.values[path]['time'])
-                        if j>0:
-                                alerttext+=("\n")
-                        alerttext+=self.values[path]['message']+"  "+alarmtime
-                        j+=1
+            if self.values[path]['state_group']==2 :
+                alarmtime=timeconverter.tconvert('%H:%M:%S',self.values[path]['time'])
+                if j>0:
+                    alerttext+=("\n")
+                    alerttext+=self.values[path]['message']+"  "+alarmtime
+                    j+=1
                 
         logger.debug("Alarm text to draw:" + alerttext)    
-        draw.text((dashboard['layout']['space_edges'],0), alerttext, font=self.font)
+        draw.text((int(dashboard['layout']['space_edges']),0), alerttext, font=self.font)
         return image
     
 # Return warnings as a string

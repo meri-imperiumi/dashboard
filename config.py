@@ -123,7 +123,7 @@ dashboard = {
             'text_field':False,
             'number_of_top_slots':3,
             'number_of_mid_slots':7,
-            'number_of_slots':17,
+            'number_of_slots':16,
             'number_of_text_slots':2
         },
         'sailing': {
@@ -373,14 +373,6 @@ dashboard = {
         },
         
         #2,6
-        'environment.depth.belowTransducer': {
-            'label': 'Depth',
-            'unit': 'm',
-            'conversion': 'm',
-            'max_age': 30
-        },
-        
-        #2,7
         'environment.forecast.weather': {
             'label':'Forcast',
             'unit' : ' ',
