@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 def convert_value(self, value, conversion = None):
     if value == None:
         return 'N/A'
+    logger.debug('Converting value:'+str(value))
     if not conversion:
         return str(value)
     if conversion == 'K_C':

@@ -11,7 +11,7 @@ import alarm
 import threading as th
 import config
 from config import dashboard
-import convert
+#from convert import convert_value
 
 logger = logging.getLogger(__name__)
 
@@ -20,15 +20,14 @@ fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
 display_font=os.path.join(str(fontdir), str(dashboard['assets']['display_font']))
 body_font=os.path.join(fontdir, str(dashboard['assets']['body_font']))
 
-display48 = ImageFont.truetype(display_font, 48)
-display24 = ImageFont.truetype(display_font, 26)
-display12 = ImageFont.truetype(display_font, 14)
-font48 = ImageFont.truetype(body_font, 48)
-font24 = ImageFont.truetype(body_font, 26)
-text_field_font = ImageFont.truetype(body_font, 18)
-font12 = ImageFont.truetype(body_font, 14)
 
-alertfont = ImageFont.truetype(body_font, 48)
+top_row_meta_font = ImageFont.truetype(display_font, int(dashboard['fontsizes']['top_row_meta']))
+mid_row_meta_font = ImageFont.truetype(display_font, int(dashboard['fontsizes']['mid_row_meta']))
+top_row_value_font = ImageFont.truetype(body_font, int(dashboard['fontsizes']['top_row_value']))
+mid_row_value_font = ImageFont.truetype(body_font, int(dashboard['fontsizes']['mid_row_value']))
+text_field_font = ImageFont.truetype(body_font, int(dashboard['fontsizes']['text_field']))
+alertfont = ImageFont.truetype(body_font, int(dashboard['fontsizes']['alarm']))
+##
 
 splash = Image.open(os.path.join(fontdir, dashboard['assets']['splash']))
 
@@ -84,7 +83,7 @@ class Draw:
     def show_message(self, msg):
         image = Image.new('1', (int(self.target.width / 2), int(self.target.height / 2)), 1)
         draw = ImageDraw.Draw(image)
-        draw.text((int(self.target.width / 2), int(self.target.height / 2)), msg, font=font24)
+        draw.text((int(self.target.width / 2), int(self.target.height / 2)), msg, font=mid_row_value_font)
         self.target.draw(image)
         self.draw_frame()
 
@@ -101,7 +100,7 @@ class Draw:
             endx=self.target.width-time_width-dashboard['layout']['space_edges']-50
             image = Image.new('1', (endx-startx, time_height), 1)
             draw = ImageDraw.Draw(image)                     
-            draw.text((0, 0), msg, font=font24)
+            draw.text((0, 0), msg, font=mid_row_value_font)
             self.target.draw(image,startx+50,self.target.height-time_height-dashboard['layout']['space_edges'])
 
     def update_value(self, msg, timestamp):
@@ -140,29 +139,45 @@ class Draw:
     def convert_value(self, value, conversion = None):
         if value == None:
             return 'N/A'
+        logger.debug('Converting value:'+str(value))
         if not conversion:
             return str(value)
-        if conversion == 'K':
+        if conversion == 'K_C':
             return "{0:.1f}".format(value - 273.15)
-        if conversion == 'm':
+        if conversion == 'm_m':
             return "{0:.1f}".format(value)
-        if conversion == 'int':
+        if conversion == 'int_str':
             return str(int(value))
         if conversion == '%':
             return str(int(value * 100))
+        if conversion == 'Pa_hPa':
+            return str(int(value / 100))
+        if conversion == 'rad_deg':
+            return str(int(math.degrees(value)))
+        if conversion == 'm/s_knots':
+            return "{0:.1f}".format(value * 1.944)
+        if conversion == 'm_NM':
+            return "{0:.1f}".format(value / 1852)
+        if conversion == 'Z_local_2':
+            return tconvert('%H:%M',value)
+        if conversion == 'Z_local_3':
+            return tconvert('%H:%M:%S',value)
+        if conversion == '.x':
+            return "{0:.1f}".format(value)
+        if conversion == '.xx':
+            return "{0:.2f}".format(value)
+        ##Older conversions for backward compability
         if conversion == 'Pa':
             return str(int(value / 100))
         if conversion == 'rad':
             return str(int(math.degrees(value)))
         if conversion == 'm/s':
             return "{0:.1f}".format(value * 1.944)
-        if conversion == 'Z':
-            dt=datetime.fromisoformat(value[0:len(value)-1])
-            #Need to set to local time!
-            return dt.strftime('%H:%M')
-        if conversion == '.x':
+        if conversion == 'K':
+            return "{0:.1f}".format(value - 273.15)
+        if conversion == 'm':
             return "{0:.1f}".format(value)
-    
+        ## Default if no conversions was found
         return 'Undef conv.'
     
     def draw_slot(self, path):
@@ -172,17 +187,21 @@ class Draw:
             return
         slot = list(dashboard[str(self.display)]).index(path)
         label = dashboard[str(self.display)][path]['label']
-        value = convert.convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
+        logger.debug("Value to print:" + str(self.values[path]['value']))
+        #value = convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
+        value = self.convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
+        logger.debug('Value to be printed:' + value)
 
         if dashboard['layout'][self.display]['number_of_slots'] == 0:
+            # No need to continue if thera are no slots to draw
             return
 
 # Draw top row slots
         if slot < dashboard['layout'][self.display]['number_of_top_slots'] and slot < dashboard['layout'][self.display]['number_of_slots'] :   
             height = dashboard['layout']['first_row_height']
             width = int((self.target.width - dashboard['layout']['space_edges']) / dashboard['layout'][self.display]['number_of_top_slots'])
-            meta_font = display24
-            value_font = font48
+            meta_font = top_row_meta_font
+            value_font = top_row_value_font
             slot_pos = slot
             top_margin = dashboard['layout']['space_edges']
             left_margin = slot_pos * width + dashboard['layout']['space_edges']
@@ -192,8 +211,8 @@ class Draw:
         elif slot < dashboard['layout'][self.display]['number_of_slots']:
             height = dashboard['layout']['other_row_height']
             width = int((self.target.width - dashboard['layout']['space_edges']) / dashboard['layout'][self.display]['number_of_mid_slots'])
-            meta_font = display12
-            value_font = font24
+            meta_font = mid_row_meta_font
+            value_font = mid_row_value_font
             slot_pos = slot - dashboard['layout'][self.display]['number_of_top_slots']
             # Draw first row or second of middle slots. This should be generalized!!
             if slot < (dashboard['layout'][self.display]['number_of_top_slots'] + dashboard['layout'][self.display]['number_of_mid_slots']):
@@ -228,7 +247,7 @@ class Draw:
         time_height = dashboard['layout']['time_height']
         image = Image.new('1', (time_width, time_height), 1)
         draw = ImageDraw.Draw(image)
-        draw.text((0, 0), self.get_time(), font=display24)
+        draw.text((0, 0), self.get_time(), font=top_row_meta_font)
         self.target.draw(image, self.target.width - dashboard['layout']['space_edges'] - time_width + self.offset_x, self.target.height - dashboard['layout']['space_edges'] - time_height + self.offset_y)
 
     def prepare_display(self):
@@ -247,7 +266,7 @@ class Draw:
         if self.display and self.display != 'default':
             label = self.display
         
-        draw.text((dashboard['layout']['space_edges'] + self.offset_x, self.target.height - dashboard['layout']['time_height'] -dashboard['layout']['space_edges']+ self.offset_y), str(label).upper(), font = display24, fill = 0)
+        draw.text((dashboard['layout']['space_edges'] + self.offset_x, self.target.height - dashboard['layout']['time_height'] -dashboard['layout']['space_edges']+ self.offset_y), str(label).upper(), font = top_row_meta_font, fill = 0)
 
         self.target.draw(image, 0, 0)
         self.draw_frame(True)
@@ -356,6 +375,7 @@ class Draw:
             slot = list(dashboard[str(self.display)]).index(path)
             if slot >= dashboard['layout'][str(self.display)]['number_of_slots'] :
                 label = dashboard[str(self.display)][path]['label']
+                #value = convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
                 value = self.convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
                 drawtext = label + value
                 draw.text(((text_slot%number_textslots)*row_space, (text_slot//number_textslots)*slot_space), drawtext, font=text_field_font)

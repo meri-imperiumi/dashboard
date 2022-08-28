@@ -155,10 +155,11 @@ class Alarmhandler:
                         j+=1
                 
         logger.debug("Alarm text to draw:" + alerttext)    
-        draw.text((0,0), alerttext, font=self.font)
+        draw.text((dashboard['layout']['space_edges'],0), alerttext, font=self.font)
         return image
     
 # Return warnings as a string
     def get_warning(self):
+        # This just a a stub
         return "Warning"
 

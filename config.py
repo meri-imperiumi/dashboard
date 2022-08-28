@@ -2,9 +2,9 @@
 
 import logging
 
-#signalk_host = 'localhost'
+signalk_host = 'localhost'
 #signalk_host = 'raspberrypi400.local'
-signalk_host = 'hal.local'
+#signalk_host = 'hal.local'
 signalk_port = 3000
 
 #Set the global logging level. This is also used by WaveShare code
@@ -52,12 +52,23 @@ loop_time_moored=600000
 #
 
 dashboard = {
-    'name': 'Elinor',
+    'name': 'Tugboat Timmy',
 
     'assets': {
         'display_font': 'nasalization-rg.otf',
         'body_font': 'Eurostile.ttf',
         'splash': 'signalK.bmp'
+    },
+    
+    'fontsizes': {
+        #Top_to_meta is also used time and status fonts in the bottom
+        'top_row_meta': 32,
+        'top_row_value': 54,
+        'mid_row_meta': 20,
+        #Mid row meta is also used for the warning text between time and status
+        'mid_row_value': 32, 
+        'alarm':48,
+        'text_field':20
     },
 
 # Timeformat. Enable use of GPS (navigation.position) to get the right timezone
@@ -75,7 +86,7 @@ dashboard = {
         'other_row_height': 80,
         'text_field_height':100,
         'text_field_offset':325,
-        'time_width':80,
+        'time_width':85,
         'time_height':40,
 
 ## If alarm_screen is set to True, the program will listen to alarms
@@ -92,7 +103,7 @@ dashboard = {
 
 # Default screen is only used when there is no navigation state.
 # This however do not take long time for Signal K to figure out so
-# don't bother with definign this one...
+# don't bother with deining this one...
         'default': {
             'text_field':False,
             'number_of_top_slots':0,
@@ -100,19 +111,19 @@ dashboard = {
             'number_of_slots':0,
             'number_of_text_slots':0
         },
-		
-        'moored': {
-            'text_field':True,
-            'number_of_top_slots':4,
-            'number_of_mid_slots':7,
-            'number_of_slots':17,
+
+       'moored': {
+            'text_field':False,
+            'number_of_top_slots':3,
+            'number_of_mid_slots':4,
+            'number_of_slots':7,
             'number_of_text_slots':2
         },
         'anchored': {
-            'text_field':True,
-            'number_of_top_slots':4,
+            'text_field':False,
+            'number_of_top_slots':3,
             'number_of_mid_slots':7,
-            'number_of_slots':18,
+            'number_of_slots':17,
             'number_of_text_slots':2
         },
         'sailing': {
@@ -124,17 +135,10 @@ dashboard = {
         },
         'motoring': {
             'text_field':False,
-            'number_of_top_slots':0,
-            'number_of_mid_slots':0,
-            'number_of_slots':0,
-            'number_of_text_slots':0
-        },
-        'alarm': {
-            'text_field':False,
-            'number_of_top_slots':0,
-            'number_of_mid_slots':0,
-            'number_of_slots':0,
-            'number_of_text_slots':0
+            'number_of_top_slots':4,
+            'number_of_mid_slots':5,
+            'number_of_slots':13,
+            'number_of_text_slots':2
         }
     },
 ##########################################################################
@@ -169,13 +173,6 @@ dashboard = {
             'conversion': '%',
             'max_age': 240
         },
-        #4
-        'environment.outside.pressure': {
-            'label': 'Baro',
-            'unit': 'hPa',
-            'conversion': 'Pa',
-            'max_age': 240
-        },
         
         # Mid rows (smaller text), max number_of_mid_slots
         #1,1
@@ -206,71 +203,7 @@ dashboard = {
             'conversion': '%',
             'max_age': 240
         },
-        #1,5
-        'electrical.batteries.277.voltage': {
-            'label': 'House Bat',
-            'unit': 'V',
-            'conversion': '.x',
-            'max_age': 240
-        },
-        #1,6
-        'electrical.solar.279.panelPower': {
-            'label': 'PV 1 Power',
-            'unit': 'W',
-            'conversion': '.x',
-            'max_age': 240
-        },
-        #1,7
-        'electrical.solar.289.panelPower': {
-            'label': 'PV 2 Power',
-            'unit': 'W',
-            'conversion': '.x',
-            'max_age': 240
-        },
-        #2,1
-        'environment.inside.mainCabin.relativeHumidity': {
-            'label':'In Humid',
-            'unit' : '%',
-            'conversion':'%',
-            'max_age':240
-        },
-        #2,2
-        'environment.forecast.wind.speed': {
-            'label':'For GWS',
-            'unit' : 'm/s',
-            'conversion':None,
-            'max_age':10800
-        },
-        
-        #2,3
-        'environment.forecast.humidity': {
-            'label':'For Humid',
-            'unit' : '%',
-            'conversion':'%',
-            'max_age':10800
-        },
-        #2,4
-        'environment.forecast.weather.clouds': {
-            'label':'For Cloud',
-            'unit' : '%',
-            'conversion': '.x',
-            'max_age': 10800
-        },
-        
-        #2,5
-        'environment.forecast.temperature': {
-            'label': 'Fore Temp',
-            'unit': '°C',
-            'conversion': 'K',
-            'max_age': 10800
-        },
-        #2,6
-        'environment.forecast.weather': {
-            'label':'Forcast',
-            'unit' : ' ',
-            'conversion' : None,
-            'max_age':10800
-        },
+  
         ################## Text fields
         'environment.outside.pressure.prediction.front.prognose': {
             'label': 'Overview:',
@@ -284,7 +217,7 @@ dashboard = {
             'conversion': False,
             'max_age': 240
         },
-	'environment.outside.pressure.prediction.front.wind': {
+    'environment.outside.pressure.prediction.front.wind': {
             'label': 'Wind change:',
             'unit': 'hPa',
             'conversion': False,
@@ -296,12 +229,12 @@ dashboard = {
             'conversion': False,
             'max_age': 240
         },
-	'environment.outside.pressure.trend.tendency': {
+    'environment.outside.pressure.trend.tendency': {
             'label': 'Baro Change:',
             'unit': 'hPa',
             'conversion': False,
             'max_age': 240
-        },	
+        },
         'environment.outside.pressure.prediction.season': {
             'label': 'Prognosis:',
             'unit': 'hPa',
@@ -328,32 +261,25 @@ dashboard = {
    'anchored': {
         # Top row (large text, max number_of_top_slots
         #1
-	'navigation.anchor.currentRadius': {
+       'navigation.anchor.currentRadius': {
             'label': 'Anchor',
             'unit': 'm',
             'conversion': 'm',
             'max_age': 30
         },
-        #2
-        'environment.wind.speedPeriodAverage': {
-            'label': 'Avg GWS',
-            'unit': 'm/s',
-            'conversion': None,
+
+       #2
+        'environment.depth.belowTransducer': {
+            'label': 'Depth',
+            'unit': 'm',
+            'conversion': 'm',
             'max_age': 240
         },
-        #3
-        'environment.wind.speedMax': {
-            'label': 'Max GWS',
+       #3
+        'environment.wind.speedApparent': {
+            'label': 'AWS',
             'unit': 'm/s',
-            'conversion': None,
-            'max_age': 240
-        },
-        
-        #4
-        'electrical.batteries.277.capacity.stateOfCharge': {
-            'label': 'SOC',
-            'unit': '%',
-            'conversion': '%',
+            'conversion': '.x',
             'max_age': 240
         },
         
@@ -519,24 +445,24 @@ dashboard = {
   'sailing': {
         # Top row (large text, max number_of_top_slots
         #1
-	'navigation.speedAverage ': {
-            'label': 'Avg SOG',
+	'navigation.speedOverGround': {
+            'label': 'SOG',
             'unit': 'kn',
             'conversion': 'm/s',
             'max_age': 240
         },
         #2
-        'environment.wind.speedPeriodAverage': {
-            'label': 'Avg GWS',
-            'unit': 'm/s',
-            'conversion': None,
+        'navigation.courseOverGroundTrue': {
+            'label': 'COG',
+            'unit': '°',
+            'conversion': 'rad',
             'max_age': 240
         },
         #3
-        'environment.wind.speedMax': {
-            'label': 'Max GWS',
-            'unit': 'm/s',
-            'conversion': None,
+        'navigation.courseRhumbline.crossTrackError': {
+            'label': 'XTE',
+            'unit': 'm',
+            'conversion': '.x',
             'max_age': 240
         },
         
