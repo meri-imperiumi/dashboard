@@ -19,7 +19,7 @@ The display resumes operation when the alarms are no longer critical.
 There is also a possibility to use a text field which as suitable fror longer text such as weather forcasts. The text is shown in two collums.
 
 The display serves as a good complement to more traditional marine display units on a Signal K enabled vessel as it can replace tank gauges, voltage/SOC displays.
-It can also show non NMEA data such as NAVTEX messages or weather forcasts which is not possible on traditional plotters/displays.
+It can also show non NMEA data such as NAVTEX messages or weather forcasts which is not possible on traditional plotters/displays. However, this is not implemented.
 
 The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) weather display.
 
@@ -44,7 +44,7 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 * Install the other dependencies from `requirements.pip`
 * Set up fonts and splash screen you want to use to the `assets` folder
 * Edit `config.py` to your liking
-* Modify 'display.py' and select the correct display.
+* Modify 'display.py' and 'clean_display.py' and select the correct display (import the right module matching your display).
 * Copy the systemd unit file to `/lib/systemd/system`. Verify/update filepaths to the program. Start it
 
 ## TODO
