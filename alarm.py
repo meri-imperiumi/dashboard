@@ -68,7 +68,7 @@ class Alarmhandler:
 ## Handle transitions of older notifications recieved
         if msg['path'] in self.values:
 
-## Handle alarms that have transitioned to normal/nominal      
+## Handle alarms that have transitioned to normal/nominal from warning or alarm      
             if state_group == 0:
                 if self.values[msg['path']]['state_group']==1 :
                     self.number_of_active_warn-=1
@@ -82,17 +82,17 @@ class Alarmhandler:
                 if self.values[msg['path']]['state_group']==2 :
                     self.number_of_active_warn+=1
                     self.number_of_active -= 1
-                time_update = True
+                #time_update = True
             else:
 ## Transition from alarm (1)-> alert (2)
                 if self.values[msg['path']]['state_group']==1 :
                     self.number_of_active_warn-=1
                     self.number_of_active += 1
-                time_update = True
+                #time_update = True
                 alarmtime=self.values[msg['path']]['time']
 ## It's a new alarm
         else:
-            time_update = True
+            #time_update = True
             if state_group == 1:
                 self.number_of_active_warn += 1
             if state_group == 2:
@@ -118,7 +118,8 @@ class Alarmhandler:
         logger.debug("Status change:" + str(not old_alarm_active == self.alarm_active))
         
         return (self.alarm_active, not old_alarm_active == self.alarm_active)
-
+    
+    ## Get a string of number of warnings or empty string if 0
     def active_warnings(self):
         
         warningtext=""
@@ -137,7 +138,7 @@ class Alarmhandler:
         return self.alarm_active
 
 
-# Draw alarm message on buffer 
+# Draw alarm message on an imange (buffer)
     def draw(self):
         alerttext=""
         j=0
