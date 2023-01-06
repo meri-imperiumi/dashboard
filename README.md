@@ -11,7 +11,7 @@ This project provides a dashboard view to telemetry from [Signal K](http://signa
 This can be used as generic display to show any data from Signal K and is not resticted by limitations of traditional NMEA2000 displays of what PGNs they can show.
 Do note that e-ink displays takes several seconds to do a full refresh and is not suitable for data changing by the second like COG,SOG etc.
 Of course, SignalK plugins showing averages (like SOG over several minutes) is doable. Data that is more static like tank status, weather, preassure, temperatures, battery SOC, voltage etc. are good candidates to show on this display.
-Certain e-ink screens can do partial refresh which might cope with data that changes by the second. Partial refreash is _not_ implemeted as of now.
+Certain e-ink screens can do partial refresh which might cope with data that changes by the second. Partial refresh is _not_ implemeted as of now.
 
 The display can be configured to show alarms and shows them on a separate screen.
 The display resumes operation when the alarms are no longer critical. 
