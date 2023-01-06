@@ -16,10 +16,16 @@ Certain e-ink screens can do partial refresh which might cope with data that cha
 The display can be configured to show alarms and shows them on a separate screen.
 The display resumes operation when the alarms are no longer critical. 
 
-There is also a possibility to use a text field which as suitable fror longer text such as weather forcasts. The text is shown in two collums.
+There is also a possibility to use a text field which as suitable for longer text such as weather forecasts. The text is shown in one or two collums (as per configuration).
 
 The display serves as a good complement to more traditional marine display units on a Signal K enabled vessel as it can replace tank gauges, voltage/SOC displays.
-It can also show non NMEA data such as NAVTEX messages or weather forcasts which is not possible on traditional plotters/displays. However, this is not implemented.
+It can also show non NMEA data such as NAVTEX messages or weather forcasts which is not possible on traditional plotters/displays served by SignalK.
+
+There is also a "display dummy" which emulates an ePaper. The size is configurable. The dummy is useful for:
+* Testing out the layout (font sizes, number of collums etc) when implementing a new display
+* Testing or developing on another Pi lacking the display
+
+There is also a Python script that clears and switches of the display properly. This one is used when the dashboard is shut down.
 
 The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) weather display.
 
@@ -27,7 +33,7 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 
 * Raspberry Pi (tested with 3B+,3B, 400 and Zero W)
 * Python 3
-* Working installation of Signal K, including plugins providing data to be displayed in the display
+* Working installation of Signal K, including plugins providing data to be displayed on the display
 * Waveshare e-ink display such as [WaveShare 4.2inch e-paper module](https://www.waveshare.com/wiki/4.2inch_e-Paper_Module)
 
 ## Setup
