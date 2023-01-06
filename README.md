@@ -16,7 +16,8 @@ Certain e-ink screens can do partial refresh which might cope with data that cha
 The display can be configured to show alarms and shows them on a separate screen.
 The display resumes operation when the alarms are no longer critical. 
 
-There is also a possibility to use a text field which as suitable fror longer text such as weather forcasts. The text is shown in two collums.
+There is also a possibility to use a text field which as suitable fror longer text such as weather forcasts. The text is shown in two collums. This is usable 
+for longer text data such as weather forcasts.
 
 The display serves as a good complement to more traditional marine display units on a Signal K enabled vessel as it can replace tank gauges, voltage/SOC displays.
 It can also show non NMEA data such as NAVTEX messages or weather forcasts which is not possible on traditional plotters/displays. However, this is not implemented.
@@ -40,7 +41,7 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 * Install the EPD library from the python directory for example (`/home/pi/e-Paper/RaspberryPi_JetsonNano/python`)
 	- sudo python3 setup.py build
 	- sudo python3 setup.py install
-* Clone this repository
+* Clone this (dashboard) repository
 * Install the other dependencies from `requirements.pip`
 * Set up fonts and splash screen you want to use to the `assets` folder
 * Edit `config.py` to your liking

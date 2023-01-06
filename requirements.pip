@@ -5,4 +5,3 @@ websocket-client
 python-dateutil
 timeinterval
 datetime
-logging
