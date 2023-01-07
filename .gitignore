@@ -5,3 +5,4 @@ __pycache__/
 config.py
 /assets/*.otf
 /assets/*.ttf
+*~
