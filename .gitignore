@@ -3,4 +3,5 @@ __pycache__/
 *$py.class
 /assets/nasalization-rg.otf
 config.py
-
+/assets/*otf
+/assets/*.ttf
