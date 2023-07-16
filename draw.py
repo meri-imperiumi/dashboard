@@ -51,7 +51,7 @@ class Draw:
         temp_display=display
 
 ## New state change, but not alarm
-        if not display == "alarm" :
+        if display != "alarm" :
             self.navigation_state=display
 
 ## Show alarm screen if alarm
@@ -73,6 +73,8 @@ class Draw:
         self.draw_frame()
 
     def get_paths(self):
+        if self.display == None :
+            return ('navigation.state')  #Bug as display is non on error
         paths = list(dashboard[str(self.display)])
         paths.append('navigation.state')
         if dashboard['layout']['alarm_screen']:
@@ -276,6 +278,7 @@ class Draw:
 
     def draw_frame(self, full = False):
 
+        logger.debug("Start draw frame")
 # As as default, put the display to sleep according to WaveShare notes
         sendtosleep=True
         
@@ -284,12 +287,17 @@ class Draw:
         
         self.drawing = True
         self.update_time()
-        
-        for path in dashboard[str(self.display)]:
-            self.draw_slot(path)
-        #Add text field
-        if dashboard['layout'][str(self.display)]['text_field']:
-            self.draw_text_field()
+
+        if self.display == None:
+            return  #Connection issues and no status
+            
+ # Populate all slots based on config if not alarm
+        if self.display != 'alarm':
+            for path in dashboard[str(self.display)]:
+                self.draw_slot(path)
+            #Add text field
+            if dashboard['layout'][str(self.display)]['text_field']:
+                self.draw_text_field()
                 
 ## Draw alermessage between status and time
         self.show_info_message()
@@ -303,7 +311,7 @@ class Draw:
         flush_start = time.time()
 #        logger.debug('Before flush of display')
  
- # Do not put the display into sleep as we expect update soon       
+# Do not put the display into sleep as we expect update soon       
         if self.display == 'loading':
             sendtosleep=False
             

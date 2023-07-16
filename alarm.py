@@ -152,8 +152,8 @@ class Alarmhandler:
                 alarmtime=timeconverter.tconvert('%H:%M:%S',self.values[path]['time'])
                 if j>0:
                     alerttext+=("\n")
-                    alerttext+=self.values[path]['message']+"  "+alarmtime
-                    j+=1
+                alerttext+=self.values[path]['message']+"  "+alarmtime
+                j+=1
                 
         logger.debug("Alarm text to draw:" + alerttext)    
         draw.text((int(dashboard['layout']['space_edges']),0), alerttext, font=self.font)

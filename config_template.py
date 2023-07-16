@@ -8,8 +8,8 @@ signalk_host = 'localhost'
 signalk_port = 3000
 
 #Set the global logging level. This is also used by WaveShare code
-log_level = logging.WARNING
-#log_level = logging.DEBUG
+#log_level = logging.WARNING
+log_level = logging.DEBUG
 
 # Set to False for screen not having partial update, True for screens that has
 # !!Partial updates not implemented!!
@@ -23,7 +23,7 @@ partial_frame_limit = 20
 #
 # Refreshtime for a display is quite long (seconds) for a full refresh, 
 # do not make this too short if the screen is not using partial refresh.
-# As per WaveShare notes, a full refresh time should not be lower than 180s
+# As per WaveShare notes, a full refresh time should not be lower than 180s (180000 ms)
 loop_time_alarm=30000
 loop_time_moving=180000
 loop_time_anchor=300000
@@ -86,13 +86,20 @@ dashboard = {
         'other_row_height': 80,
         'text_field_height':100,
         'text_field_offset':325,
-        'time_width':85,
+        'time_width':91,
         'time_height':40,
+        'alarm_screen':True,
 
 ## If alarm_screen is set to True, the program will listen to alarms
 ## and switch to an alarm screen and show the alarms until they are canceled
-        'alarm_screen':True,
 
+##  'number_of_top_slots' Number of slots in the top row (bigger)
+##  'number_of_mid_slots' Number of smaller slots under the top (per row)
+##  'number_of_slots':0 Number of values for slots in total
+##  'number_of_text_slots' Nuber of colums for the text
+
+##  'alarm_screen' 
+## This is just a dummy and can't be configured
         'loading': {
             'text_field':False,
             'number_of_top_slots':0,
@@ -103,7 +110,7 @@ dashboard = {
 
 # Default screen is only used when there is no navigation state.
 # This however do not take long time for Signal K to figure out so
-# don't bother with deining this one...
+# don't bother with dealing this one...
         'default': {
             'text_field':False,
             'number_of_top_slots':0,
@@ -114,16 +121,16 @@ dashboard = {
 
        'moored': {
             'text_field':False,
-            'number_of_top_slots':3,
+            'number_of_top_slots':2,
             'number_of_mid_slots':4,
-            'number_of_slots':7,
+            'number_of_slots':6,
             'number_of_text_slots':2
         },
         'anchored': {
             'text_field':False,
             'number_of_top_slots':3,
-            'number_of_mid_slots':7,
-            'number_of_slots':16,
+            'number_of_mid_slots':2,
+            'number_of_slots':7,
             'number_of_text_slots':2
         },
         'sailing': {
@@ -140,6 +147,13 @@ dashboard = {
             'number_of_slots':13,
             'number_of_text_slots':2
         }
+#        'alarm': {
+##            'text_field':False,
+ #           'number_of_top_slots':0,
+ #           'number_of_mid_slots':0,
+ #           'number_of_slots':0,
+ #           'number_of_text_slots':0
+ #       }
     },
 ##########################################################################
 ## Screen content
@@ -153,54 +167,49 @@ dashboard = {
 #################################################  
     'moored': {
         # Top row (large text, max number_of_top_slots
-        'environment.outside.temperature': {
-            'label': 'Outside',
-            'unit': '°C',
-            'conversion': 'K',
+        'environment.wind.angleApparent': {
+            'label': 'AWA',
+            'unit': '°',
+            'conversion': 'rad',
             'max_age': 240
         },
         #2
-        'environment.inside.mainCabin.temperature': {
-            'label': 'Inside',
-            'unit': '°C',
-            'conversion': 'K',
+        'environment.wind.speedApparent': {
+            'label': 'AWS',
+            'unit': 'm/s',
+            'conversion': False,
             'max_age': 240
         },
         #3
-        'environment.outside.relativeHumidity': {
-            'label': 'Out Humid',
-            'unit': '%',
-            'conversion': '%',
-            'max_age': 240
-        },
-        
+# Emptyp
+
         # Mid rows (smaller text), max number_of_mid_slots
         #1,1
-        'tanks.freshWater.21.currentLevel': {
-            'label': 'Water',
-            'unit': '%',
-            'conversion': '%',
+        'environment.depth.belowTransducer': {
+            'label': 'Depth',
+            'unit': 'm',
+            'conversion': False,
             'max_age': 240
         },
         #1,2
-        'tanks.fuel.20.currentLevel': {
-            'label': 'Fuel',
-            'unit': '%',
-            'conversion': '%',
+        'design.beam': {
+            'label': 'Beam',
+            'unit': 'm',
+            'conversion': '.x',
             'max_age': 240
         },
         #1,3
-        'tanks.black.22.currentLevel': {
-            'label': 'Black',
-            'unit': '%',
-            'conversion': '%',
+        'design.airHeight': {
+            'label': 'Hight',
+            'unit': 'm',
+            'conversion': '.x',
             'max_age': 240
         },
         #1,4
-        'electrical.batteries.277.capacity.stateOfCharge': {
-            'label': 'SOC',
-            'unit': '%',
-            'conversion': '%',
+        'sensors.gps.fromBow': {
+            'label': 'GPS from bow',
+            'unit': 'm',
+            'conversion': '.x',
             'max_age': 240
         },
   
@@ -292,93 +301,36 @@ dashboard = {
             'max_age': 240
         },
         #1,2
-        'environment.inside.mainCabin.temperature': {
-            'label': 'Inside',
-            'unit': '°C',
-            'conversion': 'K',
+        'design.beam': {
+            'label': 'Beam',
+            'unit': 'm',
+            'conversion': '.x',
             'max_age': 240
         },
         #1,3
-        'environment.outside.pressure': {
-            'label': 'Baro',
-            'unit': 'hPa',
-            'conversion': 'Pa',
+        'design.airHeight': {
+            'label': 'Hight',
+            'unit': 'm',
+            'conversion': '.x',
             'max_age': 240
         },
-        
         #1,4
-        'tanks.freshWater.21.currentLevel': {
-            'label': 'Water',
-            'unit': '%',
-            'conversion': '%',
-            'max_age': 240
-        },
-        #1,5
-        'tanks.fuel.20.currentLevel': {
-            'label': 'Fuel',
-            'unit': '%',
-            'conversion': '%',
-            'max_age': 240
-        },
-        #1,6
-        'tanks.black.22.currentLevel': {
-            'label': 'Black',
-            'unit': '%',
-            'conversion': '%',
-            'max_age': 240
-        },
-        #1,7
-        'electrical.batteries.277.voltage': {
-            'label': 'House Bat',
-            'unit': 'V',
+        'sensors.gps.fromBow': {
+            'label': 'GPS from bow',
+            'unit': 'm',
             'conversion': '.x',
             'max_age': 240
         },
         
         #2,1
-        'environment.inside.mainCabin.relativeHumidity': {
-            'label': 'In Humid',
-            'unit': '%',
-            'conversion': '%',
-            'max_age': 240
-        },
-        
-        #2,2
-        'electrical.solar.279.panelPower': {
-            'label': 'PV 1 Power',
-            'unit': 'W',
+        'environment.wind.speedMax': {
+            'label': 'WS Max',
+            'unit': 'm/s',
             'conversion': '.x',
             'max_age': 240
         },
-        #2,3
-        'electrical.solar.289.panelPower': {
-            'label': 'PV 2 Power',
-            'unit': 'W',
-            'conversion': '.x',
-            'max_age': 240
-        },
-        #2,4
-        'environment.forecast.temperature': {
-            'label': 'Fore Temp',
-            'unit': '°C',
-            'conversion': 'K',
-            'max_age': 10800
-        },
-        #2,5
-        'environment.forecast.wind.speed': {
-            'label':'For GWS',
-            'unit' : 'm/s',
-            'conversion': None,
-            'max_age':10800
-        },
         
-        #2,6
-        'environment.forecast.weather': {
-            'label':'Forcast',
-            'unit' : ' ',
-            'conversion' : None,
-            'max_age':10800
-        },
+
  
         ################## Text fields
         'environment.outside.pressure.prediction.front.prognose': {
@@ -468,49 +420,49 @@ dashboard = {
         
         # Mid rows (smaller text), max number_of_mid_slots
         #1,1
-        'environment.outside.temperature': {
-            'label': 'Outside',
-            'unit': '°C',
-            'conversion': 'K',
-            'max_age': 240
-        },
-        #1,2
-        'environment.inside.mainCabin.temperature': {
-            'label': 'Inside',
-            'unit': '°C',
-            'conversion': 'K',
-            'max_age': 240
-        },
-        #1,3
         'environment.wind.angleApparent': {
             'label': 'AWA',
             'unit': '°',
             'conversion': 'rad',
             'max_age': 240
         },
+        #1,2
+        'environment.wind.speedApparent': {
+            'label': 'AWS',
+            'unit': 'm/s',
+            'conversion': '.x',
+            'max_age': 240
+        },
+        #1,3
+        'environment.wind.speedMax': {
+            'label': 'WSM',
+            'unit': 'm/a',
+            'conversion': '.x',
+            'max_age': 240
+        },
         
         #1,4
-        'electrical.solar.279.controllerMode': {
-            'label': 'PV 1 Mode',
-            'unit': ' ',
-            'conversion': None,
+        'environment.wind.speedMaxPeriodAverage': {
+            'label': 'WSM PA',
+            'unit': 'm/s',
+            'conversion': '.x',
             'max_age': 240
         },
         
         #1,5
-        'electrical.solar.279.panelPower': {
-            'label': 'PV 1 Power',
-            'unit': 'W',
+        'environment.wind.speedPeriodAverage': {
+            'label': 'WS PA',
+            'unit': 'm/s',
             'conversion': '.x',
             'max_age': 240
         },
 
         #2,1
-        'environment.forecast.temperature': {
-            'label': 'Fore Temp',
-            'unit': '°C',
-            'conversion': 'K',
-            'max_age': 10800
+        'environment.wind.speedPeriodMax': {
+            'label': 'WS PAM',
+            'unit': 'm/s',
+            'conversion': '.x',
+            'max_age': 240
         },
         #2,2
         'environment.forecast.wind.speed': {
