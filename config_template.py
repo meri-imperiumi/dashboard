@@ -92,7 +92,7 @@ dashboard = {
         'alarm_screen':True,
         
 # value_margin is the distance between the label to the value
-# unit_margi is the distance between the value and the unit
+# unit_margin is the distance between the value and the unit
         'slot_margins' : {
             'top_row' : {
                 'value_margin': 30,
