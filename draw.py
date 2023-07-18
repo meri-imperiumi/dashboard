@@ -54,7 +54,7 @@ class Draw:
         if display != "alarm" :
             self.navigation_state=display
 
-## Show alarm screen if alarm
+## Show alarm screen if alarm is active or changed to active
         if self.alarmhandler.has_active_alarm() or display=="alarm":
             temp_display = "alarm"
 
@@ -62,7 +62,7 @@ class Draw:
         if (not self.alarmhandler.has_active_alarm()) and self.display=="alarm" :
             temp_display = self.navigation_state
 
-## No change in displays, just return
+## No change in displays/mode, just return
         if self.display == temp_display:
             return
         
@@ -74,7 +74,7 @@ class Draw:
 
     def get_paths(self):
         if self.display == None :
-            return ('navigation.state')  #Bug as display is non on error
+            return ('navigation.state')  #Bug as display is none on error
         paths = list(dashboard[str(self.display)])
         paths.append('navigation.state')
         if dashboard['layout']['alarm_screen']:
@@ -207,8 +207,11 @@ class Draw:
             slot_pos = slot
             top_margin = dashboard['layout']['space_edges']
             left_margin = slot_pos * width + dashboard['layout']['space_edges']
-            value_margin = 30
-            unit_margin = 75
+ #           value_margin = 30
+ #           unit_margin = 75
+            value_margin = int(dashboard['layout']['slot_margins']['top_row']['value_margin'])
+            unit_margin = int(dashboard['layout']['slot_margins']['top_row']['unit_margin'])
+            
 # Draw middle row slots (the smaller ones)
         elif slot < dashboard['layout'][self.display]['number_of_slots']:
             height = dashboard['layout']['other_row_height']
@@ -224,8 +227,10 @@ class Draw:
                 slot_pos = slot - dashboard['layout'][self.display]['number_of_top_slots']-dashboard['layout'][self.display]['number_of_mid_slots']
                 top_margin = dashboard['layout']['space_edges'] + dashboard['layout']['first_row_height'] + 2*dashboard['layout']['space_row'] + height
             left_margin = slot_pos * width + dashboard['layout']['space_edges']
-            value_margin = 20
-            unit_margin = 45
+     #       value_margin = 20
+     #       unit_margin = 45
+            value_margin = int(dashboard['layout']['slot_margins']['mid_row']['value_margin'])
+            unit_margin = int(dashboard['layout']['slot_margins']['mid_row']['unit_margin'])
         else:
             # Number of slots has been reached (the rest is text field data). Don't draw these.
             return

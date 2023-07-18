@@ -4,9 +4,9 @@ After=multi-user.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /home/pi/hal/curiosity.py
+ExecStart=/usr/bin/python3 /home/pi/dashboard/curiosity.py
 ExecStop=/usr/bin/pkill -INT curiosity.py
-ExecStopPost=/usr/bin/python3 /home/pi/hal/clean_display.py
+ExecStopPost=/usr/bin/python3 /home/pi/dashboard/clean_display.py
 
 [Install]
 WantedBy=multi-user.target

@@ -8,8 +8,8 @@ signalk_host = 'localhost'
 signalk_port = 3000
 
 #Set the global logging level. This is also used by WaveShare code
-#log_level = logging.WARNING
-log_level = logging.DEBUG
+log_level = logging.WARNING
+#log_level = logging.DEBUG
 
 # Set to False for screen not having partial update, True for screens that has
 # !!Partial updates not implemented!!
@@ -71,6 +71,7 @@ dashboard = {
         'text_field':20
     },
 
+
 # Timeformat. Enable use of GPS (navigation.position) to get the right timezone
 # when converting from UTC. Also det the default timezone.
 # GPS based timezone not implemented
@@ -89,6 +90,20 @@ dashboard = {
         'time_width':91,
         'time_height':40,
         'alarm_screen':True,
+        
+# value_margin is the distance between the label to the value
+# unit_margi is the distance between the value and the unit
+        'slot_margins' : {
+            'top_row' : {
+                'value_margin': 30,
+                'unit_margin' : 75
+            },
+            'mid_row': {
+                'value_margin': 20,
+                'unit_margin' : 45
+            }
+        },
+
 
 ## If alarm_screen is set to True, the program will listen to alarms
 ## and switch to an alarm screen and show the alarms until they are canceled
@@ -147,13 +162,6 @@ dashboard = {
             'number_of_slots':13,
             'number_of_text_slots':2
         }
-#        'alarm': {
-##            'text_field':False,
- #           'number_of_top_slots':0,
- #           'number_of_mid_slots':0,
- #           'number_of_slots':0,
- #           'number_of_text_slots':0
- #       }
     },
 ##########################################################################
 ## Screen content
@@ -181,7 +189,7 @@ dashboard = {
             'max_age': 240
         },
         #3
-# Emptyp
+# Empty
 
         # Mid rows (smaller text), max number_of_mid_slots
         #1,1
@@ -332,7 +340,7 @@ dashboard = {
         
 
  
-        ################## Text fields
+        ################## Text fields  #################
         'environment.outside.pressure.prediction.front.prognose': {
             'label': 'Overview:',
             'unit': ' ',

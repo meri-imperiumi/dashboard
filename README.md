@@ -11,7 +11,7 @@ This project provides a dashboard view to telemetry from [Signal K](http://signa
 This can be used as generic display to show any data from Signal K and is not resticted by limitations of traditional NMEA2000 displays of what PGNs they can show.
 Do note that e-ink displays takes several seconds to do a full refresh and is not suitable for data changing by the second like COG,SOG etc.
 Of course, SignalK plugins showing averages (like SOG over several minutes) is doable. Data that is more static like tank status, weather, preassure, temperatures, battery SOC, voltage etc. are good candidates to show on this display.
-Certain e-ink screens can do partial refresh which might cope with data that changes by the second. Partial refresh is _not_ implemeted as of now.
+Certain e-ink screens can do partial refresh which might cope with data that changes by the second. Partial refresh is _not_ implemeted.
 
 The display can be configured to show alarms and shows them on a separate screen.
 The display resumes operation when the alarms are no longer critical. 
@@ -23,7 +23,7 @@ It can also show non NMEA data such as NAVTEX messages or weather forcasts which
 
 There is also a "display dummy" which emulates an ePaper. The size is configurable. The dummy is useful for:
 * Testing out the layout (font sizes, number of collums etc) when implementing a new display
-* Testing or developing on another Pi lacking the display
+* Testing or developing on another Pi lacking a display
 
 There is also a Python script that clears and switches of the display properly. This one is used when the dashboard is shut down.
 
@@ -34,6 +34,10 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 * Raspberry Pi (tested with 3B+,3B, 400 and Zero W)
 * Python 3
 * Working installation of Signal K, including plugins providing data to be displayed on the display
+	* The default configuration of the display expects data from the following plugins (to get more data to showcase)
+		- Derived Data
+		- Calculate boat and wind speed averages
+		- Open Weather Forcast
 * Waveshare e-ink display such as [WaveShare 4.2inch e-paper module](https://www.waveshare.com/wiki/4.2inch_e-Paper_Module)
 
 ## Setup
@@ -50,8 +54,7 @@ The project is inspired on the [inkstate](https://github.com/yawkat/inkstate) we
 * Install the other dependencies from `requirements.pip`
 * Set up fonts and splash screen you want to use to the `assets` folder
 * Edit `config.py` to your liking
-* Modify `display.py` and `clean_display.py` and select the correct display (import the right module matching your display).
-* Copy the systemd unit file to `/lib/systemd/system`. Verify/update filepaths to the program. Start it
+* Modify `display.py` and `clean_display.py` and select the correct display (import the right module matching your display) For example epd = epd7in5_V2.EPD().
+* Copy the systemd unit file to `/lib/systemd/system`. Verify/update filepaths to the programs. 
 
-## TODO
 
