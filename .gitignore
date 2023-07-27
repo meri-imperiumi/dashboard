@@ -6,5 +6,5 @@ config.py
 /assets/*.otf
 /assets/*.ttf
 *~
-*.bak
+*.bak*
 
