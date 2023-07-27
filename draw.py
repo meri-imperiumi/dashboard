@@ -341,11 +341,13 @@ class Draw:
             self.loop(config.loop_time_anchor)
         elif (self.display == "alarm"):
             logger.debug("Alarm:Setting update loop to:" + str(config.loop_time_alarm))
-            self.loop(config.loop_time_alarm)           
-        else:
-            # If we're not moving it is fine to update less frequently
+            self.loop(config.loop_time_alarm)
+        elif (self.display == "moored"):
             logger.debug("Moored:Setting update loop to:" + str(config.loop_time_moored))
             self.loop(config.loop_time_moored)
+        else:
+            # Other not normal statuses. Short update cycle as we expect a change
+            self.loop(config.loop_time_alarm)
 
     def loop(self, refresh_rate):
  #       logger.debug('Entering loop')
