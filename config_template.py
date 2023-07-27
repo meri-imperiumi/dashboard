@@ -2,8 +2,8 @@
 
 import logging
 
-signalk_host = 'localhost'
-#signalk_host = 'raspberrypi400.local'
+#signalk_host = 'localhost'
+signalk_host = 'raspberrypi400.local'
 #signalk_host = 'hal.local'
 signalk_port = 3000
 

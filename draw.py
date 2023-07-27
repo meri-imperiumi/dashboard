@@ -249,16 +249,14 @@ class Draw:
         return now.strftime(str(dashboard['time_format']))
 
     def update_time(self):
-        
         time_width = dashboard['layout']['time_width']
         time_height = dashboard['layout']['time_height']
         image = Image.new('1', (time_width, time_height), 1)
         draw = ImageDraw.Draw(image)
-        draw.text((0, 0), self.get_time(), font=top_row_meta_font)
-        self.target.draw(image, self.target.width - dashboard['layout']['space_edges'] - time_width + self.offset_x, self.target.height - dashboard['layout']['space_edges'] - time_height + self.offset_y)
+        draw.text((time_width, 0), self.get_time(), font=top_row_meta_font, fill=0,anchor="ra")
+        self.target.draw(image, self.target.width - dashboard['layout']['space_edges'] - time_width + self.offset_x, self.target.height - dashboard['layout']['space_edges'] - time_height -  + self.offset_y)
 
     def prepare_display(self):
-        
         label= dashboard['name']
         for path in self.values:
             self.values[path]['rendered'] = False
@@ -390,7 +388,7 @@ class Draw:
                 label = dashboard[str(self.display)][path]['label']
                 #value = convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
                 value = self.convert_value(self.values[path]['value'], dashboard[str(self.display)][path]['conversion'])
-                drawtext = label + value
+                drawtext = label + " " + value
                 draw.text(((text_slot%number_textslots)*row_space, (text_slot//number_textslots)*slot_space), drawtext, font=text_field_font)
                 text_slot += 1
                 self.values[path]['rendered'] = True
