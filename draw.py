@@ -6,7 +6,7 @@ import dateutil.parser
 import time
 import math
 import timeinterval
-import timeconverter
+from timeconverter import tconvert
 import alarm
 import threading as th
 import config
